@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlannerCraft — Customize Your Planner</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== SIDEBAR: Customization Panel ===== -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <span class="logo">✦ PlannerCraft</span>
+      <button id="toggle-sidebar" title="Collapse panel">‹</button>
+    </div>
+
+    <div class="sidebar-body">
+
+      <!-- View -->
+      <section class="control-group">
+        <h3>View</h3>
+        <div class="pill-group" id="view-selector">
+          <button class="pill active" data-view="daily">Daily</button>
+          <button class="pill" data-view="weekly">Weekly</button>
+          <button class="pill" data-view="monthly">Monthly</button>
+        </div>
+      </section>
+
+      <!-- Theme -->
+      <section class="control-group">
+        <h3>Theme</h3>
+        <div class="theme-swatches" id="theme-selector">
+          <button class="swatch active" data-theme="rose"     title="Rose"     style="background:#e11d48"></button>
+          <button class="swatch"        data-theme="violet"   title="Violet"   style="background:#7c3aed"></button>
+          <button class="swatch"        data-theme="ocean"    title="Ocean"    style="background:#0284c7"></button>
+          <button class="swatch"        data-theme="forest"   title="Forest"   style="background:#16a34a"></button>
+          <button class="swatch"        data-theme="amber"    title="Amber"    style="background:#d97706"></button>
+          <button class="swatch"        data-theme="slate"    title="Slate"    style="background:#475569"></button>
+        </div>
+        <div class="row mt8">
+          <label class="toggle-label">Dark mode</label>
+          <label class="switch">
+            <input type="checkbox" id="dark-toggle" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Font -->
+      <section class="control-group">
+        <h3>Font</h3>
+        <select id="font-selector">
+          <option value="Inter, sans-serif">Inter (default)</option>
+          <option value="'Georgia', serif">Georgia</option>
+          <option value="'Courier New', monospace">Courier New</option>
+          <option value="'Trebuchet MS', sans-serif">Trebuchet</option>
+        </select>
+      </section>
+
+      <!-- Layout density -->
+      <section class="control-group">
+        <h3>Spacing</h3>
+        <div class="pill-group" id="density-selector">
+          <button class="pill active" data-density="normal">Normal</button>
+          <button class="pill" data-density="compact">Compact</button>
+          <button class="pill" data-density="spacious">Spacious</button>
+        </div>
+      </section>
+
+      <!-- Sections -->
+      <section class="control-group">
+        <h3>Sections</h3>
+        <div id="section-toggles">
+          <label class="toggle-row"><input type="checkbox" data-section="priorities" checked /> Top Priorities</label>
+          <label class="toggle-row"><input type="checkbox" data-section="schedule" checked /> Schedule / Time Blocks</label>
+          <label class="toggle-row"><input type="checkbox" data-section="habits" checked /> Habit Tracker</label>
+          <label class="toggle-row"><input type="checkbox" data-section="notes" checked /> Notes</label>
+          <label class="toggle-row"><input type="checkbox" data-section="goals" checked /> Goals</label>
+          <label class="toggle-row"><input type="checkbox" data-section="gratitude" /> Gratitude</label>
+          <label class="toggle-row"><input type="checkbox" data-section="water" /> Water Tracker</label>
+          <label class="toggle-row"><input type="checkbox" data-section="mood" /> Mood Tracker</label>
+        </div>
+      </section>
+
+      <!-- Time range (daily view) -->
+      <section class="control-group" id="time-range-group">
+        <h3>Time Range</h3>
+        <div class="row">
+          <label>Start</label>
+          <select id="start-hour">
+            <option value="5">5 AM</option>
+            <option value="6" selected>6 AM</option>
+            <option value="7">7 AM</option>
+            <option value="8">8 AM</option>
+          </select>
+        </div>
+        <div class="row mt8">
+          <label>End</label>
+          <select id="end-hour">
+            <option value="20">8 PM</option>
+            <option value="21" selected>9 PM</option>
+            <option value="22">10 PM</option>
+            <option value="23">11 PM</option>
+          </select>
+        </div>
+        <div class="row mt8">
+          <label>Format</label>
+          <div class="pill-group" id="time-format-selector">
+            <button class="pill active" data-format="12">12h</button>
+            <button class="pill" data-format="24">24h</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Habit names -->
+      <section class="control-group" id="habit-names-group">
+        <h3>Habit Labels</h3>
+        <div id="habit-list"></div>
+        <button class="btn-ghost small mt8" id="add-habit">+ Add habit</button>
+      </section>
+
+      <!-- Actions -->
+      <section class="control-group actions-group">
+        <button class="btn-primary" id="print-btn">Print / Save PDF</button>
+        <button class="btn-ghost" id="reset-btn">Reset to defaults</button>
+      </section>
+
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT: Planner Preview ===== -->
+  <main id="planner-area">
+
+    <header class="planner-header">
+      <div class="date-nav">
+        <button id="prev-btn">&#8592;</button>
+        <h1 id="planner-title">Loading…</h1>
+        <button id="next-btn">&#8594;</button>
+      </div>
+      <button id="today-btn">Today</button>
+    </header>
+
+    <div id="planner-content">
+      <!-- Rendered by JS -->
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
