@@ -1,36 +1,137 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SkySchool — Student Pilot Study Platform
 
-## Getting Started
+A structured, gamified study platform for student pilots across multiple certifications and ratings. Think Duolingo meets ground school, covering Private Pilot through ATP.
 
-First, run the development server:
+## Features
+
+- **Progressive disclosure** — students only see content relevant to their current training stage
+- **Multi-track course structure** — PPL, Instrument Rating, Commercial, Multi-Engine, CFI, ATP
+- **AI Tutor** — streaming chat powered by Claude (claude-sonnet-4-5), context-aware, aviation-accurate
+- **Gamified progress** — XP, streaks, bronze/silver/gold mastery, achievements
+- **Quiz bank** — FAA-style multiple choice with spaced repetition
+- **Journey map** — visual roadmap of the full pilot certification path
+- **Dark mode** — full dark/light support
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router) + TypeScript
+- **Styling:** Tailwind CSS v4 + shadcn/ui
+- **Database:** Prisma ORM + SQLite (local) / PostgreSQL (production)
+- **Auth:** NextAuth v5 (Credentials + Google OAuth)
+- **AI:** Anthropic Claude API (`claude-sonnet-4-5`) via streaming SSE
+- **Animation:** Framer Motion
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- npm
+
+### 1. Clone and install
+
+```bash
+git clone <repo>
+cd skyschool
+npm install
+```
+
+### 2. Configure environment
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your values:
+- `NEXTAUTH_SECRET` — generate with `openssl rand -base64 32`
+- `ANTHROPIC_API_KEY` — from [console.anthropic.com](https://console.anthropic.com)
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — optional, from Google Cloud Console
+
+### 3. Set up the database
+
+```bash
+# Run migrations
+npx prisma migrate dev
+
+# Seed with course content (tracks, lessons, questions, achievements)
+npm run db:seed
+```
+
+### 4. Start development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npx prisma migrate dev        # Run migrations
+npx prisma generate           # Regenerate client
+npx prisma studio             # Open DB GUI
+npm run db:seed               # Seed course content
+```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+  (auth)/         # Login + Register pages
+  (app)/          # Protected app pages (dashboard, lesson, quiz, etc.)
+  (onboarding)/   # Onboarding wizard
+  api/            # Route handlers (auth, chat, quiz, lessons, etc.)
+components/
+  app/            # AppNav
+  chat/           # AI tutor chat panel
+  dashboard/      # Dashboard + skill tree
+  lesson/         # Lesson view
+  quiz/           # Quiz interface
+  onboarding/     # Onboarding wizard
+  journey/        # Journey map
+  progress/       # Progress stats
+  achievements/   # Achievements gallery
+  profile/        # Profile & settings
+  ui/             # shadcn/ui components
+lib/
+  db.ts           # Prisma singleton
+  actions/        # Server actions
+  types.ts        # Shared TypeScript types
+  generated/      # Prisma generated client
+prisma/
+  schema.prisma   # Database schema
+  seed.ts         # Course content seed
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Onboarding Flow
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Stage selection** — "Where are you in your training?" (PPL / IR / CPL / etc.)
+2. **Follow-up** — 1–2 context questions based on stage
+3. **Daily goal** — 5 / 10 / 15 / 30 minutes per day
+4. **Launch** — dropped directly into first lesson
 
-## Deploy on Vercel
+## Progressive Disclosure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Features unlock as the student progresses:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Trigger | Unlocks |
+|---------|---------|
+| First lesson completed | Bookmarks, Progress stats |
+| 5 lessons completed | Achievements page |
+| 50% of track | Weak areas review |
+| 75% of track | Next track preview |
+| Track completed | Multi-track UI, Journey map |
+
+## Disclaimer
+
+SkySchool is a study aid only. It does **not** satisfy FAA training requirements and does **not** replace a certified flight instructor (CFI/CFII). Always train with a qualified instructor for actual flight operations.
+
+## Production Deployment
+
+For production, switch to PostgreSQL:
+
+1. Update `.env`: `DATABASE_URL="postgresql://user:password@host:5432/skyschool"`
+2. Update `prisma/schema.prisma` datasource provider to `"postgresql"`
+3. Run `npx prisma migrate deploy && npm run db:seed`
+4. Run `npm run build && npm start`
