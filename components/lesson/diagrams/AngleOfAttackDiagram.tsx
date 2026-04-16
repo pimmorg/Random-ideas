@@ -106,10 +106,10 @@ export default function AngleOfAttackDiagram() {
             animate={{ y: isStalled ? [0, 4, 0] : [3, 0, 3] }}
             transition={{ repeat: Infinity, duration: 1.3, ease: "easeInOut" }}
           >
-            {/* Line goes upward — markerEnd places arrowhead at the top */}
+            {/* Line goes from wing surface upward — markerEnd at top points up */}
             <line
-              x1="152" y1={64 - liftHeight}
-              x2="152" y2="62"
+              x1="152" y1="62"
+              x2="152" y2={64 - liftHeight}
               stroke={liftColor}
               strokeWidth="2.5"
               markerEnd="url(#aoaLift)"
