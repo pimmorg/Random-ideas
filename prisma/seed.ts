@@ -360,6 +360,113 @@ Before any flight, know your aircraft's **total electrical load**. Add the amps 
     ]})
   }
 
+  // Unit 3: Performance Maneuvers (ACS Area V)
+  const unit3 = await prisma.unit.upsert({
+    where: { trackId_slug: { trackId: ppl.id, slug: "performance-maneuvers" } },
+    update: {},
+    create: { trackId: ppl.id, slug: "performance-maneuvers", title: "Performance Maneuvers", description: "Steep turns, slow flight, and performance takeoffs/landings.", icon: "🔄", sortOrder: 3 },
+  })
+
+  const l6 = await prisma.lesson.upsert({
+    where: { unitId_slug: { unitId: unit3.id, slug: "steep-turns" } },
+    update: {},
+    create: { unitId: unit3.id, slug: "steep-turns", title: "Steep Turns", description: "ACS V-A: Maintaining coordinated flight at 45° bank.", estimatedMins: 12, sortOrder: 1 },
+  })
+
+  await prisma.lessonSection.deleteMany({ where: { lessonId: l6.id } })
+  await prisma.lessonSection.createMany({
+    data: [
+      {
+        lessonId: l6.id,
+        title: "Why Bank Angle Matters",
+        content: `In any banked turn, the total lift vector tilts with the wings. Only the **vertical component** of lift supports the aircraft's weight — the horizontal component is what makes the aircraft turn.
+
+As bank angle increases:
+- The vertical component of lift **decreases** (less lift fighting gravity)
+- To maintain altitude, total lift must **increase** (more back pressure)
+- **Load factor (G-force)** increases — the aircraft and pilot feel heavier
+- **Stall speed increases** — the wing must work harder, so it reaches its critical AoA sooner
+
+Use the slider below to explore the relationship between bank angle and these factors:
+
+[DIAGRAM:steep-turn]
+
+:::warning
+At 60° of bank, the load factor is **2.0G** — the aircraft effectively weighs twice as much. Most normal-category GA aircraft are certified to **3.8G**. Beyond 60° bank, load factors climb rapidly toward that structural limit.
+:::`,
+        sortOrder: 1,
+      },
+      {
+        lessonId: l6.id,
+        title: "Flying the Steep Turn (ACS Standards)",
+        content: `The private pilot ACS requires steep turns at **45° bank angle, ±5°**, with:
+
+- Altitude: ±100 feet
+- Airspeed: ±10 knots
+- Bank: ±5° from 45°
+- Heading: Roll out within ±10° of entry heading
+- Complete at least one 360° turn in each direction
+
+**Procedure:**
+
+1. Clear the area — look for traffic
+2. Note your heading and pick a reference point on the horizon
+3. Establish cruise speed and altitude
+4. Smoothly roll into a 45° bank
+5. **Add back pressure** — this is the key; at 45° you need ~41% more lift
+6. **Add a small amount of power** — the increased drag requires it to hold airspeed
+7. **Trim is optional** — some instructors prefer you hold the pressure manually
+8. Watch for the reference point — begin rollout ~20° before your heading
+9. Reverse and repeat in the opposite direction
+
+:::tip
+The most common error is losing altitude in the first 90° of the turn. As soon as the bank reaches 45°, immediately apply additional back pressure — don't wait for the altimeter to unwind.
+:::
+
+:::info
+**Overbanking tendency**: In a steep turn, the outside wing moves faster and produces more lift, which tends to steepen the bank. You may need slight opposite aileron to maintain exactly 45°.
+:::`,
+        sortOrder: 2,
+      },
+    ],
+  })
+
+  // Questions for unit3 (Performance Maneuvers)
+  const existingQ3 = await prisma.question.count({ where: { unitId: unit3.id } })
+  if (existingQ3 === 0) {
+    const q10 = await prisma.question.create({ data: { unitId: unit3.id, question: "In a 45° banked turn, the load factor is approximately:", explanation: "Load factor = 1/cos(bank angle). At 45°, cos(45°) ≈ 0.707, so load factor = 1/0.707 ≈ 1.41G. The aircraft effectively weighs 41% more than in straight-and-level flight.", farAimRef: "FAA-H-8083-25B Ch.5", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: q10.id, text: "1.4G", isCorrect: true, sortOrder: 1 },
+      { questionId: q10.id, text: "1.0G", isCorrect: false, sortOrder: 2 },
+      { questionId: q10.id, text: "2.0G", isCorrect: false, sortOrder: 3 },
+      { questionId: q10.id, text: "1.2G", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const q11 = await prisma.question.create({ data: { unitId: unit3.id, question: "At 60° of bank, the load factor is:", explanation: "Load factor = 1/cos(60°) = 1/0.5 = 2.0G. At this bank angle, the aircraft's apparent weight has doubled and the stall speed has increased by approximately 41%.", farAimRef: "FAA-H-8083-25B Ch.5", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: q11.id, text: "2.0G", isCorrect: true, sortOrder: 1 },
+      { questionId: q11.id, text: "1.5G", isCorrect: false, sortOrder: 2 },
+      { questionId: q11.id, text: "3.0G", isCorrect: false, sortOrder: 3 },
+      { questionId: q11.id, text: "1.7G", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const q12 = await prisma.question.create({ data: { unitId: unit3.id, question: "During a steep turn, the pilot must add back pressure primarily because:", explanation: "When the aircraft banks, the total lift vector tilts. The vertical component of lift decreases. To maintain altitude, the total lift (and therefore the vertical component) must increase, which requires increased angle of attack — achieved by pulling back on the yoke.", farAimRef: "FAA-H-8083-25B Ch.5", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: q12.id, text: "The vertical component of lift decreases as bank increases", isCorrect: true, sortOrder: 1 },
+      { questionId: q12.id, text: "The aircraft nose tends to pitch up automatically", isCorrect: false, sortOrder: 2 },
+      { questionId: q12.id, text: "Back pressure prevents exceeding VNE", isCorrect: false, sortOrder: 3 },
+      { questionId: q12.id, text: "The ailerons produce adverse yaw", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const q13 = await prisma.question.create({ data: { unitId: unit3.id, question: "The private pilot ACS steep turn standard requires:", explanation: "The ACS standard for steep turns is 45° of bank, maintaining altitude within ±100 feet, airspeed within ±10 knots, and rolling out within ±10° of the entry heading.", farAimRef: "FAA-S-ACS-6B V.A", difficulty: "easy" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: q13.id, text: "45° bank, ±100 ft altitude, ±10 kts airspeed", isCorrect: true, sortOrder: 1 },
+      { questionId: q13.id, text: "60° bank, ±200 ft altitude, ±15 kts airspeed", isCorrect: false, sortOrder: 2 },
+      { questionId: q13.id, text: "30° bank, ±50 ft altitude, ±5 kts airspeed", isCorrect: false, sortOrder: 3 },
+      { questionId: q13.id, text: "45° bank, ±200 ft altitude, ±20 kts airspeed", isCorrect: false, sortOrder: 4 },
+    ]})
+  }
+
   // Achievements
   const achievements = [
     { slug: "first-lesson", name: "First Flight", description: "Complete your first lesson.", icon: "🎯", xpReward: 50, category: "milestones" },

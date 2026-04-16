@@ -8,6 +8,7 @@ const AngleOfAttackDiagram = dynamic(() => import("./diagrams/AngleOfAttackDiagr
 const FourStrokeDiagram = dynamic(() => import("./diagrams/FourStrokeDiagram"), { ssr: false })
 const ElectricalSystemDiagram = dynamic(() => import("./diagrams/ElectricalSystemDiagram"), { ssr: false })
 const AlternatorFailureDiagram = dynamic(() => import("./diagrams/AlternatorFailureDiagram"), { ssr: false })
+const SteepTurnDiagram = dynamic(() => import("./diagrams/SteepTurnDiagram"), { ssr: false })
 
 const DIAGRAMS: Record<string, React.ComponentType> = {
   "four-forces": FourForcesDiagram,
@@ -15,6 +16,7 @@ const DIAGRAMS: Record<string, React.ComponentType> = {
   "four-stroke": FourStrokeDiagram,
   "electrical-system": ElectricalSystemDiagram,
   "alternator-failure": AlternatorFailureDiagram,
+  "steep-turn": SteepTurnDiagram,
 }
 
 type CalloutVariant = "info" | "tip" | "warning"
