@@ -4,107 +4,133 @@ import { motion } from "framer-motion"
 
 export default function FourForcesDiagram() {
   return (
-    <div className="my-6 rounded-2xl border border-sky-100 dark:border-sky-900 bg-gradient-to-b from-sky-50 to-white dark:from-sky-950 dark:to-slate-900 p-4">
-      <h3 className="text-xs font-semibold text-sky-600 dark:text-sky-400 uppercase tracking-wide text-center mb-3">
+    <div className="my-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-gradient-to-b from-sky-50 to-white dark:from-sky-950 dark:to-slate-900 p-4">
+      <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-widest text-center mb-3">
         The Four Forces in Equilibrium
       </h3>
-      <div className="relative flex items-center justify-center">
-        <svg viewBox="0 0 320 220" className="w-full max-w-sm">
-          {/* Sky background */}
+
+      <div className="flex items-center justify-center">
+        <svg viewBox="0 0 320 210" className="w-full max-w-sm">
           <defs>
-            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="ffSky" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#e0f2fe" />
               <stop offset="100%" stopColor="#f0f9ff" />
             </linearGradient>
+            {/* One arrow marker per color — orient=auto rotates to match line direction */}
+            <marker id="ffBlue"   markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <path d="M 0 0 L 8 3 L 0 6 Z" fill="#0ea5e9" />
+            </marker>
+            <marker id="ffRed"    markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <path d="M 0 0 L 8 3 L 0 6 Z" fill="#ef4444" />
+            </marker>
+            <marker id="ffGreen"  markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <path d="M 0 0 L 8 3 L 0 6 Z" fill="#22c55e" />
+            </marker>
+            <marker id="ffOrange" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <path d="M 0 0 L 8 3 L 0 6 Z" fill="#f97316" />
+            </marker>
           </defs>
-          <rect width="320" height="220" fill="url(#sky)" rx="12" />
 
-          {/* Ground line */}
-          <line x1="0" y1="195" x2="320" y2="195" stroke="#86efac" strokeWidth="3" />
-          <rect x="0" y="195" width="320" height="25" fill="#dcfce7" rx="0" />
+          {/* Sky background */}
+          <rect width="320" height="210" fill="url(#ffSky)" rx="12" />
 
-          {/* Aircraft body */}
-          <g transform="translate(160, 110)">
-            {/* Fuselage */}
-            <ellipse cx="0" cy="0" rx="38" ry="11" fill="#1e293b" />
-            {/* Wings */}
-            <polygon points="-8,-4 -8,4 -55,14 -55,8" fill="#334155" />
-            <polygon points="8,-4 8,4 55,14 55,8" fill="#334155" />
-            {/* Tail */}
-            <polygon points="-30,-3 -38,-3 -48,-14 -38,-3" fill="#334155" />
-            <polygon points="-30,3 -38,3 -45,10 -38,3" fill="#334155" />
-            {/* Cockpit */}
-            <ellipse cx="14" cy="-4" rx="10" ry="6" fill="#7dd3fc" opacity="0.8" />
-            {/* Propeller */}
-            <ellipse cx="38" cy="-8" rx="3" ry="9" fill="#64748b" transform="rotate(-20,38,-8)" />
-            <ellipse cx="38" cy="8" rx="3" ry="9" fill="#64748b" transform="rotate(-20,38,8)" />
-          </g>
+          {/* Ground */}
+          <rect x="0" y="188" width="320" height="22" fill="#dcfce7" />
+          <line x1="0" y1="188" x2="320" y2="188" stroke="#86efac" strokeWidth="2" />
 
-          {/* LIFT arrow - up */}
+          {/* ── Aircraft — side-view silhouette, nose pointing RIGHT ── */}
+
+          {/* Fuselage */}
+          <path
+            d="M 246,108
+               C 228,99 203,96 172,95
+               L 138,95
+               L 106,100
+               L 100,108
+               L 106,116
+               L 172,121
+               C 203,120 228,117 246,108 Z"
+            fill="#1e293b"
+          />
+
+          {/* Main wing — high-wing, sits on top of fuselage */}
+          <path
+            d="M 150,95 L 166,95 L 226,87 L 221,90 L 166,91 L 150,91 Z"
+            fill="#334155"
+          />
+
+          {/* Vertical stabilizer at tail */}
+          <path d="M 100,108 L 102,87 L 119,99 Z" fill="#334155" />
+
+          {/* Horizontal stabilizer at tail */}
+          <path d="M 102,108 L 78,106 L 78,111 L 102,111 Z" fill="#334155" />
+
+          {/* Cockpit windows */}
+          <path
+            d="M 180,95 L 207,95 L 212,104 L 180,104 Z"
+            fill="#7dd3fc"
+            opacity="0.75"
+          />
+
+          {/* Propeller — vertical line at nose */}
+          <line x1="249" y1="93" x2="249" y2="123"
+            stroke="#64748b" strokeWidth="3.5" strokeLinecap="round" opacity="0.45" />
+
+          {/* ── Force arrows ── */}
+
+          {/* LIFT — up from wing */}
           <motion.g
-            initial={{ y: 4, opacity: 0.7 }}
+            initial={{ y: 5, opacity: 0.6 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ repeat: Infinity, repeatType: "reverse", duration: 1.2, ease: "easeInOut" }}
           >
-            <line x1="160" y1="100" x2="160" y2="42" stroke="#0ea5e9" strokeWidth="3" markerEnd="url(#arrowUp)" />
-            <text x="172" y="65" fontSize="11" fontWeight="700" fill="#0ea5e9">LIFT</text>
+            <line x1="183" y1="87" x2="183" y2="31"
+              stroke="#0ea5e9" strokeWidth="2.5" markerEnd="url(#ffBlue)" />
+            <text x="189" y="56" fontSize="10" fontWeight="700" fill="#0ea5e9">LIFT</text>
           </motion.g>
 
-          {/* WEIGHT arrow - down */}
+          {/* WEIGHT — down from center of gravity */}
           <motion.g
-            initial={{ y: -4, opacity: 0.7 }}
+            initial={{ y: -5, opacity: 0.6 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ repeat: Infinity, repeatType: "reverse", duration: 1.2, ease: "easeInOut", delay: 0.3 }}
           >
-            <line x1="160" y1="120" x2="160" y2="178" stroke="#ef4444" strokeWidth="3" markerEnd="url(#arrowDown)" />
-            <text x="168" y="162" fontSize="11" fontWeight="700" fill="#ef4444">WEIGHT</text>
+            <line x1="173" y1="122" x2="173" y2="179"
+              stroke="#ef4444" strokeWidth="2.5" markerEnd="url(#ffRed)" />
+            <text x="179" y="161" fontSize="10" fontWeight="700" fill="#ef4444">WEIGHT</text>
           </motion.g>
 
-          {/* THRUST arrow - right */}
+          {/* THRUST — forward / rightward from propeller */}
           <motion.g
-            initial={{ x: -4, opacity: 0.7 }}
+            initial={{ x: -5, opacity: 0.6 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ repeat: Infinity, repeatType: "reverse", duration: 1.4, ease: "easeInOut", delay: 0.1 }}
           >
-            <line x1="205" y1="110" x2="270" y2="110" stroke="#22c55e" strokeWidth="3" markerEnd="url(#arrowRight)" />
-            <text x="228" y="100" fontSize="11" fontWeight="700" fill="#22c55e">THRUST</text>
+            <line x1="253" y1="108" x2="303" y2="108"
+              stroke="#22c55e" strokeWidth="2.5" markerEnd="url(#ffGreen)" />
+            <text x="255" y="100" fontSize="10" fontWeight="700" fill="#22c55e">THRUST</text>
           </motion.g>
 
-          {/* DRAG arrow - left */}
+          {/* DRAG — rearward / leftward from tail */}
           <motion.g
-            initial={{ x: 4, opacity: 0.7 }}
+            initial={{ x: 5, opacity: 0.6 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ repeat: Infinity, repeatType: "reverse", duration: 1.4, ease: "easeInOut", delay: 0.4 }}
           >
-            <line x1="115" y1="110" x2="50" y2="110" stroke="#f97316" strokeWidth="3" markerEnd="url(#arrowLeft)" />
-            <text x="54" y="100" fontSize="11" fontWeight="700" fill="#f97316">DRAG</text>
+            <line x1="76" y1="108" x2="34" y2="108"
+              stroke="#f97316" strokeWidth="2.5" markerEnd="url(#ffOrange)" />
+            <text x="36" y="100" fontSize="10" fontWeight="700" fill="#f97316">DRAG</text>
           </motion.g>
-
-          {/* Arrow markers */}
-          <defs>
-            <marker id="arrowUp" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-              <path d="M 0 8 L 4 0 L 8 8" fill="#0ea5e9" />
-            </marker>
-            <marker id="arrowDown" markerWidth="8" markerHeight="8" refX="4" refY="0" orient="auto">
-              <path d="M 0 0 L 4 8 L 8 0" fill="#ef4444" />
-            </marker>
-            <marker id="arrowRight" markerWidth="8" markerHeight="8" refX="0" refY="4" orient="auto">
-              <path d="M 0 0 L 8 4 L 0 8" fill="#22c55e" />
-            </marker>
-            <marker id="arrowLeft" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
-              <path d="M 8 0 L 0 4 L 8 8" fill="#f97316" />
-            </marker>
-          </defs>
         </svg>
       </div>
 
       {/* Legend */}
       <div className="grid grid-cols-2 gap-2 mt-3">
         {[
-          { color: "#0ea5e9", label: "Lift", desc: "Upward aerodynamic force" },
+          { color: "#0ea5e9", label: "Lift",   desc: "Upward aerodynamic force" },
           { color: "#ef4444", label: "Weight", desc: "Gravity pulling down" },
-          { color: "#22c55e", label: "Thrust", desc: "Engine pulling forward" },
-          { color: "#f97316", label: "Drag", desc: "Aerodynamic resistance" },
+          { color: "#22c55e", label: "Thrust", desc: "Engine pushing forward" },
+          { color: "#f97316", label: "Drag",   desc: "Aerodynamic resistance" },
         ].map((f) => (
           <div key={f.label} className="flex items-center gap-2 text-xs">
             <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: f.color }} />
