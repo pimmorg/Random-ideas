@@ -94,32 +94,54 @@ export default function DashboardClient({
 }: DashboardClientProps) {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      {/* Track header */}
-      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-        <span className="text-base">{trackIcon}</span>
-        <span>{trackName}</span>
-        <span className="ml-auto text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 px-2 py-0.5 rounded-full font-medium">
-          {overallCompletion}% complete
-        </span>
-      </div>
+      {/* Track + stats header card */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        {/* Track row */}
+        <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl shrink-0">{trackIcon}</span>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <span className="text-sm font-bold text-slate-900 dark:text-white truncate">{trackName}</span>
+                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 shrink-0">{overallCompletion}%</span>
+              </div>
+              <div className="h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-blue-600 rounded-full transition-all duration-500"
+                  style={{ width: `${overallCompletion}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
 
-      {/* Stats bar */}
-      <div className="grid grid-cols-3 gap-3">
-        <StatCard
-          icon={<Flame className="w-4 h-4 text-orange-500" />}
-          value={stats.currentStreak}
-          label="day streak"
-        />
-        <StatCard
-          icon={<Zap className="w-4 h-4 text-blue-500" />}
-          value={stats.totalXp}
-          label="total XP"
-        />
-        <StatCard
-          icon={<Target className="w-4 h-4 text-emerald-500" />}
-          value={`${stats.dailyGoalMinutes}m`}
-          label="daily goal"
-        />
+        {/* Stats row */}
+        <div className="grid grid-cols-3 divide-x divide-slate-100 dark:divide-slate-800">
+          <StatItem
+            icon={<Flame className="w-3.5 h-3.5 text-orange-500" />}
+            label="Streak"
+            value={stats.currentStreak}
+            unit="days"
+            sub={stats.currentStreak > 0 ? "Keep it up!" : "Start today"}
+            valueClass="text-orange-500"
+          />
+          <StatItem
+            icon={<Zap className="w-3.5 h-3.5 text-blue-500" />}
+            label="Total XP"
+            value={stats.totalXp}
+            unit={null}
+            sub="earned so far"
+            valueClass="text-blue-600 dark:text-blue-400"
+          />
+          <StatItem
+            icon={<Target className="w-3.5 h-3.5 text-emerald-500" />}
+            label="Daily Goal"
+            value={stats.dailyGoalMinutes}
+            unit="min"
+            sub="per day"
+            valueClass="text-emerald-600 dark:text-emerald-400"
+          />
+        </div>
       </div>
 
       {/* Exam Readiness Summary */}
@@ -221,20 +243,34 @@ export default function DashboardClient({
   )
 }
 
-function StatCard({
+function StatItem({
   icon,
-  value,
   label,
+  value,
+  unit,
+  sub,
+  valueClass,
 }: {
   icon: React.ReactNode
-  value: number | string
   label: string
+  value: number
+  unit: string | null
+  sub: string
+  valueClass: string
 }) {
   return (
-    <div className="flex flex-col items-center gap-1 p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-      {icon}
-      <span className="text-lg font-bold text-slate-900 dark:text-white">{value}</span>
-      <span className="text-xs text-slate-500 dark:text-slate-400">{label}</span>
+    <div className="px-4 py-4 flex flex-col gap-0.5">
+      <div className="flex items-center gap-1.5">
+        {icon}
+        <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">{label}</span>
+      </div>
+      <div className="flex items-baseline gap-1 mt-1">
+        <span className={cn("text-2xl font-extrabold tabular-nums", valueClass)}>
+          {value.toLocaleString()}
+        </span>
+        {unit && <span className="text-xs text-slate-400 font-medium">{unit}</span>}
+      </div>
+      <div className="text-[11px] text-slate-400">{sub}</div>
     </div>
   )
 }
