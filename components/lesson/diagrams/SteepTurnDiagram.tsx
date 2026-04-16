@@ -4,7 +4,7 @@ import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 
 export default function SteepTurnDiagram() {
-  const [bank, setBank] = useState(45) // degrees — PPL standard steep turn
+  const [bank, setBank] = useState(45)
 
   const stats = useMemo(() => {
     const rad = (bank * Math.PI) / 180
@@ -18,9 +18,18 @@ export default function SteepTurnDiagram() {
   const dangerLevel =
     bank >= 70 ? "critical" : bank >= 55 ? "warning" : "normal"
 
-  const liftLength = 60 + bank * 0.5 // total lift arrow grows as bank increases (need more lift)
-  const vertLen = liftLength * Math.cos((bank * Math.PI) / 180)
-  const horizLen = liftLength * Math.sin((bank * Math.PI) / 180)
+  // Arrow lengths — total lift grows with bank to show pilot must increase lift
+  const liftLength = 60 + bank * 0.6
+  const rad = (bank * Math.PI) / 180
+  const vertLen = liftLength * Math.cos(rad)
+  const horizLen = liftLength * Math.sin(rad)
+
+  // Load factor reference line positions (from center y=120, going up)
+  // 1G baseline = vertLen at 0° bank = 60px
+  const baseLen = 60 // lift length at 0° bank
+  const g1Y = 120 - baseLen
+  const g2Y = 120 - baseLen * 2
+  const g38Y = 120 - baseLen * 3.8
 
   return (
     <div className="my-6 rounded-2xl border border-indigo-100 dark:border-indigo-900 bg-gradient-to-b from-indigo-50 to-white dark:from-indigo-950 dark:to-slate-900 p-4 overflow-hidden">
@@ -33,99 +42,125 @@ export default function SteepTurnDiagram() {
 
       {/* SVG Diagram */}
       <div className="flex justify-center mb-4">
-        <svg viewBox="0 0 300 220" className="w-full max-w-sm">
-          {/* Background sky gradient */}
+        <svg viewBox="0 0 300 240" className="w-full max-w-sm">
           <defs>
             <linearGradient id="skyBg" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#c7d2fe" stopOpacity="0.3" />
               <stop offset="100%" stopColor="#e0e7ff" stopOpacity="0.1" />
             </linearGradient>
+            {/* Wing gradient — white to light gray for a 3D feel */}
+            <linearGradient id="wingTop" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ffffff" />
+              <stop offset="100%" stopColor="#e2e8f0" />
+            </linearGradient>
           </defs>
-          <rect width="300" height="220" fill="url(#skyBg)" rx="12" />
+          <rect width="300" height="240" fill="url(#skyBg)" rx="12" />
 
           {/* Horizon line */}
-          <line x1="0" y1="160" x2="300" y2="160" stroke="#94a3b8" strokeWidth="1" strokeDasharray="6,3" />
-          <text x="290" y="155" fontSize="8" fill="#94a3b8" textAnchor="end">horizon</text>
+          <line x1="0" y1="175" x2="300" y2="175" stroke="#94a3b8" strokeWidth="1" strokeDasharray="6,3" />
+          <text x="290" y="170" fontSize="8" fill="#94a3b8" textAnchor="end">horizon</text>
 
-          {/* CENTER: 150, 120 */}
-          <g transform={`translate(150, 120)`}>
+          {/* ── Load Factor Reference Lines ── */}
+          {/* 1G line */}
+          <line x1="20" y1={g1Y} x2="280" y2={g1Y} stroke="#6366f1" strokeWidth="0.7" strokeDasharray="3,4" opacity="0.5" />
+          <text x="283" y={g1Y + 3} fontSize="7" fill="#6366f1" opacity="0.7" fontWeight="600">1G</text>
+
+          {/* 2G line */}
+          {g2Y > 5 && (
+            <>
+              <line x1="20" y1={g2Y} x2="280" y2={g2Y} stroke="#f97316" strokeWidth="0.7" strokeDasharray="3,4" opacity="0.5" />
+              <text x="283" y={g2Y + 3} fontSize="7" fill="#f97316" opacity="0.7" fontWeight="600">2G</text>
+            </>
+          )}
+
+          {/* 3.8G structural limit line */}
+          {g38Y > 5 && (
+            <>
+              <line x1="20" y1={g38Y} x2="280" y2={g38Y} stroke="#ef4444" strokeWidth="1" strokeDasharray="2,3" opacity="0.6" />
+              <text x="283" y={g38Y + 3} fontSize="7" fill="#ef4444" opacity="0.8" fontWeight="700">3.8G</text>
+              <text x="17" y={g38Y + 3} fontSize="6" fill="#ef4444" opacity="0.6" textAnchor="end">LIMIT</text>
+            </>
+          )}
+
+          {/* ── CENTER POINT: 150, 120 ── */}
+          <g transform="translate(150, 120)">
 
             {/* Weight arrow — always straight down */}
-            <line x1="0" y1="0" x2="0" y2="50" stroke="#ef4444" strokeWidth="2.5" strokeDasharray="4,3" />
-            <polygon points="-5,50 0,58 5,50" fill="#ef4444" />
-            <text x="8" y="54" fontSize="10" fontWeight="700" fill="#ef4444">W</text>
+            <line x1="0" y1="5" x2="0" y2="55" stroke="#ef4444" strokeWidth="2.5" strokeDasharray="4,3" />
+            <polygon points="-5,55 0,63 5,55" fill="#ef4444" />
+            <text x="8" y="58" fontSize="10" fontWeight="700" fill="#ef4444">W</text>
 
-            {/* Rotating group — aircraft + lift vectors */}
+            {/* ── Rotating group: aircraft + total lift ── */}
             <g transform={`rotate(${-bank})`}>
 
-              {/* Vertical component of lift — project back to true vertical */}
-              {/* Drawn BEFORE aircraft so it appears behind */}
-
-              {/* Total lift arrow — perpendicular to wings, pointing "up" from aircraft */}
-              <line
-                x1="0" y1="0" x2="0" y2={-liftLength}
-                stroke="#22c55e" strokeWidth="3"
-              />
-              <polygon
-                points={`-5,${-liftLength} 0,${-liftLength - 8} 5,${-liftLength}`}
-                fill="#22c55e"
-              />
+              {/* Total lift arrow */}
+              <line x1="0" y1="-5" x2="0" y2={-liftLength} stroke="#22c55e" strokeWidth="3" />
+              <polygon points={`-5,${-liftLength} 0,${-liftLength - 8} 5,${-liftLength}`} fill="#22c55e" />
               <text
-                x="8" y={-liftLength + 6} fontSize="9" fontWeight="700" fill="#22c55e"
-                transform={`rotate(${bank}, 8, ${-liftLength + 6})`}
+                x="8" y={-liftLength + 5} fontSize="9" fontWeight="700" fill="#22c55e"
+                transform={`rotate(${bank}, 8, ${-liftLength + 5})`}
               >
                 Total Lift
               </text>
 
-              {/* Aircraft silhouette (front view) */}
-              {/* Fuselage */}
-              <ellipse cx="0" cy="0" rx="6" ry="10" fill="#334155" />
-              {/* Left wing */}
-              <line x1="-6" y1="0" x2="-60" y2="4" stroke="#334155" strokeWidth="4" strokeLinecap="round" />
-              {/* Right wing */}
-              <line x1="6" y1="0" x2="60" y2="4" stroke="#334155" strokeWidth="4" strokeLinecap="round" />
+              {/* ── Aircraft (front view) ── */}
+              {/* Fuselage — rounded dark body */}
+              <ellipse cx="0" cy="0" rx="7" ry="12" fill="#334155" />
+              <ellipse cx="0" cy="-1" rx="6" ry="9" fill="#475569" />
+
+              {/* Left wing — solid white airfoil shape */}
+              <polygon
+                points="-7,-1 -62,3 -64,5 -60,6 -7,3"
+                fill="url(#wingTop)" stroke="#94a3b8" strokeWidth="0.8"
+              />
+              {/* Left wingtip light (red) */}
+              <circle cx="-63" cy="4" r="2" fill="#ef4444" opacity="0.9" />
+
+              {/* Right wing — solid white airfoil shape */}
+              <polygon
+                points="7,-1 62,3 64,5 60,6 7,3"
+                fill="url(#wingTop)" stroke="#94a3b8" strokeWidth="0.8"
+              />
+              {/* Right wingtip light (green) */}
+              <circle cx="63" cy="4" r="2" fill="#22c55e" opacity="0.9" />
+
               {/* Windshield */}
-              <ellipse cx="0" cy="-4" rx="4" ry="3" fill="#7dd3fc" opacity="0.8" />
+              <ellipse cx="0" cy="-5" rx="4.5" ry="3.5" fill="#7dd3fc" opacity="0.85" />
+
+              {/* Vertical stabilizer hint */}
+              <rect x="-1" y="-12" width="2" height="6" rx="1" fill="#475569" />
             </g>
 
-            {/* Vertical component — dashed blue, always points straight up */}
-            <line
-              x1="0" y1="0" x2="0" y2={-vertLen}
-              stroke="#3b82f6" strokeWidth="2" strokeDasharray="5,3"
-            />
+            {/* ── Vertical component — dashed blue, always straight up ── */}
+            <line x1="0" y1="-5" x2="0" y2={-vertLen} stroke="#3b82f6" strokeWidth="2.5" strokeDasharray="5,3" />
             {vertLen > 15 && (
-              <polygon
-                points={`-4,${-vertLen} 0,${-vertLen - 6} 4,${-vertLen}`}
-                fill="#3b82f6"
-              />
+              <polygon points={`-4,${-vertLen} 0,${-vertLen - 7} 4,${-vertLen}`} fill="#3b82f6" />
             )}
-            {vertLen > 20 && (
-              <text
-                x="-10" y={-vertLen + 6} fontSize="8" fontWeight="600" fill="#3b82f6" textAnchor="end"
-              >
-                Vert: {Math.round(stats.verticalLiftPct)}%
+            {vertLen > 22 && (
+              <text x="-8" y={-vertLen + 5} fontSize="9" fontWeight="700" fill="#3b82f6" textAnchor="end">
+                {Math.round(stats.verticalLiftPct)}%
               </text>
             )}
 
-            {/* Horizontal component — dashed orange, points sideways in turn direction */}
+            {/* ── Horizontal component — dashed orange, horizontal ── */}
             {horizLen > 5 && (
               <>
-                <line
-                  x1="0" y1="0" x2={horizLen} y2="0"
-                  stroke="#f97316" strokeWidth="2" strokeDasharray="5,3"
-                />
-                <polygon
-                  points={`${horizLen},-4 ${horizLen + 6},0 ${horizLen},4`}
-                  fill="#f97316"
-                />
-                {horizLen > 20 && (
-                  <text
-                    x={horizLen / 2} y="14" fontSize="8" fontWeight="600" fill="#f97316" textAnchor="middle"
-                  >
-                    Centripetal
+                <line x1="5" y1="0" x2={horizLen} y2="0" stroke="#f97316" strokeWidth="2.5" strokeDasharray="5,3" />
+                <polygon points={`${horizLen},-4 ${horizLen + 7},0 ${horizLen},4`} fill="#f97316" />
+                {horizLen > 18 && (
+                  <text x={horizLen / 2 + 3} y="-7" fontSize="8" fontWeight="700" fill="#f97316" textAnchor="middle">
+                    Horiz: {Math.round(100 - stats.verticalLiftPct)}%
                   </text>
                 )}
               </>
+            )}
+
+            {/* Right-angle indicator between vertical and horizontal components */}
+            {bank > 8 && bank < 72 && (
+              <rect
+                x="1" y={-10} width="8" height="8"
+                fill="none" stroke="#94a3b8" strokeWidth="0.7" opacity="0.6"
+              />
             )}
           </g>
 
@@ -136,7 +171,7 @@ export default function SteepTurnDiagram() {
             <line x1="0" y1="12" x2="14" y2="12" stroke="#3b82f6" strokeWidth="2" strokeDasharray="4,2" />
             <text x="18" y="16" fontSize="8" fill="#64748b">Vertical Component</text>
             <line x1="0" y1="24" x2="14" y2="24" stroke="#f97316" strokeWidth="2" strokeDasharray="4,2" />
-            <text x="18" y="28" fontSize="8" fill="#64748b">Horizontal (turning force)</text>
+            <text x="18" y="28" fontSize="8" fill="#64748b">Horizontal Component</text>
             <line x1="0" y1="36" x2="14" y2="36" stroke="#ef4444" strokeWidth="2" strokeDasharray="4,2" />
             <text x="18" y="40" fontSize="8" fill="#64748b">Weight</text>
           </g>
@@ -165,7 +200,6 @@ export default function SteepTurnDiagram() {
           onChange={(e) => setBank(Number(e.target.value))}
           className="w-full accent-indigo-600"
         />
-        {/* Tick marks */}
         <div className="flex justify-between text-xs text-slate-300 dark:text-slate-600 px-0.5 mt-0.5">
           {[0, 15, 30, 45, 60, 75].map((t) => (
             <span key={t} className={bank === t ? "text-indigo-500 font-bold" : ""}>|</span>
