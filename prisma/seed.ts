@@ -260,24 +260,20 @@ The ACS (Airman Certification Standards) requires private pilot applicants to ex
       {
         lessonId: l5.id,
         title: "Circuit Protection & Alternator Failure",
-        content: `**Circuit breakers (CBs)** protect each individual circuit from electrical overload or short circuits. Unlike fuses, most aircraft circuit breakers are **resettable** — they pop out when tripped and can be pushed back in once.
+        content: `**Circuit breakers (CBs)** protect each individual circuit from overload or short circuits. Unlike fuses, most aircraft circuit breakers are **resettable** — they pop out when tripped.
 
 :::warning
-A tripped circuit breaker may indicate a fault in that circuit. The FAA guidance is: wait 1 minute, then reset once. If it trips again, **do not reset it** — leave it out and assume there is a fault.
+A tripped circuit breaker may indicate a fault. FAA guidance: wait 1 minute, then reset **once**. If it trips again, leave it out — resetting a faulted circuit risks fire or further damage.
 :::
 
-**Alternator failure** in flight is one of the most common electrical emergencies:
+When the alternator fails in flight, the battery becomes your only power source. The key skill is **load shedding** — systematically turning off non-essential equipment to stretch battery endurance.
 
-| Indication | Action |
-|-----------|--------|
-| LOW VOLTAGE light on | Attempt alternator reset (per POH) |
-| Ammeter shows discharge | Turn off non-essential electrical loads |
-| Alternator reset fails | Declare minimum essential loads only |
+Use the simulator below to practice. Click the red button to trigger a failure, then decide what to turn off:
 
-The **essential bus** (or emergency bus on some aircraft) keeps the most critical items powered — typically the attitude indicator, one radio, and transponder.
+[DIAGRAM:alternator-failure]
 
 :::tip
-Know your aircraft's **electrical load management**: before a long flight, add up the amps of every switch you plan to turn on. The alternator output (typically 60–70A) minus your load is your margin. A negative margin means you're draining the battery.
+Before any flight, know your aircraft's **total electrical load**. Add the amps of everything you plan to use. The alternator (60–70A output) minus your load is your safety margin. With the alternator out, that margin disappears instantly.
 :::`,
         sortOrder: 2,
       },
