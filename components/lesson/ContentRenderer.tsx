@@ -6,11 +6,13 @@ import ReactMarkdown from "react-markdown"
 const FourForcesDiagram = dynamic(() => import("./diagrams/FourForcesDiagram"), { ssr: false })
 const AngleOfAttackDiagram = dynamic(() => import("./diagrams/AngleOfAttackDiagram"), { ssr: false })
 const FourStrokeDiagram = dynamic(() => import("./diagrams/FourStrokeDiagram"), { ssr: false })
+const ElectricalSystemDiagram = dynamic(() => import("./diagrams/ElectricalSystemDiagram"), { ssr: false })
 
 const DIAGRAMS: Record<string, React.ComponentType> = {
   "four-forces": FourForcesDiagram,
   "angle-of-attack": AngleOfAttackDiagram,
   "four-stroke": FourStrokeDiagram,
+  "electrical-system": ElectricalSystemDiagram,
 }
 
 type CalloutVariant = "info" | "tip" | "warning"

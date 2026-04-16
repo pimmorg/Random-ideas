@@ -141,6 +141,11 @@ Altitude loss during recovery varies. A clean stall at altitude may cost only 50
     update: {},
     create: { unitId: unit2.id, slug: "fuel-systems", title: "Fuel Systems", description: "Fuel types, sumping, and fuel management.", estimatedMins: 8, sortOrder: 2 },
   })
+  const l5 = await prisma.lesson.upsert({
+    where: { unitId_slug: { unitId: unit2.id, slug: "electrical-systems" } },
+    update: {},
+    create: { unitId: unit2.id, slug: "electrical-systems", title: "Electrical Systems", description: "Battery, alternator, bus bar, and circuit protection.", estimatedMins: 12, sortOrder: 3 },
+  })
 
   // Sections for l3
   await prisma.lessonSection.deleteMany({ where: { lessonId: l3.id } })
@@ -234,6 +239,51 @@ If you find water, sump repeatedly until it's gone. Water often settles from con
     ],
   })
 
+  // Sections for l5 (Electrical Systems)
+  await prisma.lessonSection.deleteMany({ where: { lessonId: l5.id } })
+  await prisma.lessonSection.createMany({
+    data: [
+      {
+        lessonId: l5.id,
+        title: "How the Electrical System Works",
+        content: `Most training aircraft use a **12V or 24V direct-current (DC) electrical system**. Power flows from two sources — the battery and the alternator — through a master switch, to a central bus bar, and out through circuit breakers to individual systems.
+
+Tap each component in the diagram to learn what it does:
+
+[DIAGRAM:electrical-system]
+
+:::info
+The ACS (Airman Certification Standards) requires private pilot applicants to explain the electrical system, including the battery, alternator, master switch, and circuit protection devices. This is ACS Area of Operation I, Task G, Line Item F.
+:::`,
+        sortOrder: 1,
+      },
+      {
+        lessonId: l5.id,
+        title: "Circuit Protection & Alternator Failure",
+        content: `**Circuit breakers (CBs)** protect each individual circuit from electrical overload or short circuits. Unlike fuses, most aircraft circuit breakers are **resettable** — they pop out when tripped and can be pushed back in once.
+
+:::warning
+A tripped circuit breaker may indicate a fault in that circuit. The FAA guidance is: wait 1 minute, then reset once. If it trips again, **do not reset it** — leave it out and assume there is a fault.
+:::
+
+**Alternator failure** in flight is one of the most common electrical emergencies:
+
+| Indication | Action |
+|-----------|--------|
+| LOW VOLTAGE light on | Attempt alternator reset (per POH) |
+| Ammeter shows discharge | Turn off non-essential electrical loads |
+| Alternator reset fails | Declare minimum essential loads only |
+
+The **essential bus** (or emergency bus on some aircraft) keeps the most critical items powered — typically the attitude indicator, one radio, and transponder.
+
+:::tip
+Know your aircraft's **electrical load management**: before a long flight, add up the amps of every switch you plan to turn on. The alternator output (typically 60–70A) minus your load is your margin. A negative margin means you're draining the battery.
+:::`,
+        sortOrder: 2,
+      },
+    ],
+  })
+
   // Questions for unit1
   const existingQ1 = await prisma.question.count({ where: { unitId: unit1.id } })
   if (existingQ1 === 0) {
@@ -262,7 +312,7 @@ If you find water, sump repeatedly until it's gone. Water often settles from con
     ]})
   }
 
-  // Questions for unit2
+  // Questions for unit2 (fuel + electrical)
   const existingQ2 = await prisma.question.count({ where: { unitId: unit2.id } })
   if (existingQ2 === 0) {
     const q4 = await prisma.question.create({ data: { unitId: unit2.id, question: "Most training aircraft use which grade of aviation fuel?", explanation: "100LL (low-lead) avgas is the most common fuel for piston aircraft. It is dyed blue for easy identification.", difficulty: "easy" } })
@@ -287,6 +337,30 @@ If you find water, sump repeatedly until it's gone. Water often settles from con
       { questionId: q6.id, text: "The fuel is 100LL and uncontaminated", isCorrect: true, sortOrder: 2 },
       { questionId: q6.id, text: "The fuel tank is empty", isCorrect: false, sortOrder: 3 },
       { questionId: q6.id, text: "Jet-A has been inadvertently added", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const q7 = await prisma.question.create({ data: { unitId: unit2.id, question: "The primary source of electrical power during flight is the:", explanation: "The alternator, driven by the engine, is the primary power source in flight. It powers all systems and charges the battery. The battery is a backup source used mainly for starting and emergency power.", farAimRef: "FAA-H-8083-25B Ch.7", difficulty: "easy" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: q7.id, text: "Alternator", isCorrect: true, sortOrder: 1 },
+      { questionId: q7.id, text: "Battery", isCorrect: false, sortOrder: 2 },
+      { questionId: q7.id, text: "Voltage regulator", isCorrect: false, sortOrder: 3 },
+      { questionId: q7.id, text: "Bus bar", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const q8 = await prisma.question.create({ data: { unitId: unit2.id, question: "If an alternator failure occurs in flight, the ammeter will show:", explanation: "When the alternator fails, it stops supplying current. The battery begins discharging to meet the electrical load, so the ammeter will show a discharge (negative) reading, indicating more current is being drawn than generated.", farAimRef: "FAA-H-8083-25B Ch.7", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: q8.id, text: "A discharge (negative or zero) reading", isCorrect: true, sortOrder: 1 },
+      { questionId: q8.id, text: "A high positive charge reading", isCorrect: false, sortOrder: 2 },
+      { questionId: q8.id, text: "No change — the battery compensates automatically", isCorrect: false, sortOrder: 3 },
+      { questionId: q8.id, text: "A fluctuating reading as voltage regulator compensates", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const q9 = await prisma.question.create({ data: { unitId: unit2.id, question: "A circuit breaker trips in flight. After waiting 1 minute, you reset it and it trips again. You should:", explanation: "A circuit breaker that trips repeatedly indicates a fault in that circuit. FAA guidance states to reset a tripped CB only once. If it trips again, leave it out — resetting a faulted circuit risks fire or further electrical damage.", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: q9.id, text: "Leave it out and assume there is a circuit fault", isCorrect: true, sortOrder: 1 },
+      { questionId: q9.id, text: "Reset it again immediately", isCorrect: false, sortOrder: 2 },
+      { questionId: q9.id, text: "Turn off the master switch and reset all breakers", isCorrect: false, sortOrder: 3 },
+      { questionId: q9.id, text: "Declare an emergency and land as soon as possible", isCorrect: false, sortOrder: 4 },
     ]})
   }
 
