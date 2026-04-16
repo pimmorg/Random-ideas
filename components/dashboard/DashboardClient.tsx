@@ -1,6 +1,7 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import {
   Flame,
@@ -239,6 +240,7 @@ function StatCard({
 }
 
 function UnitCard({ unit, unitIndex }: { unit: Unit; unitIndex: number }) {
+  const [open, setOpen] = useState(false)
   const isFullyCompleted = unit.completionPercent === 100
   const mastery = unit.masteryLevel as keyof typeof masteryColors
 
@@ -254,63 +256,76 @@ function UnitCard({ unit, unitIndex }: { unit: Unit; unitIndex: number }) {
           : "border-slate-100 dark:border-slate-800"
       )}
     >
-      {/* Unit header */}
-      <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
-        {/* Title row */}
-        <div className="flex items-center gap-2.5 mb-3">
-          <span className="text-xl">{unit.icon ?? "📚"}</span>
-          <div className="flex-1 min-w-0 flex items-center gap-2">
-            <span className="font-bold text-slate-900 dark:text-white text-sm truncate">
-              {unit.title}
-            </span>
-            {mastery !== "none" && (
-              <Award className={cn("w-4 h-4 shrink-0", masteryColors[mastery])} />
-            )}
-          </div>
+      {/* Unit header — click anywhere to toggle */}
+      <div
+        role="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-3 px-4 py-3.5 cursor-pointer bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none"
+      >
+        {/* Icon + title */}
+        <span className="text-xl shrink-0">{unit.icon ?? "📚"}</span>
+        <div className="flex-1 min-w-0 flex items-center gap-2">
+          <span className="font-bold text-slate-900 dark:text-white text-sm truncate">
+            {unit.title}
+          </span>
+          {mastery !== "none" && (
+            <Award className={cn("w-4 h-4 shrink-0", masteryColors[mastery])} />
+          )}
+        </div>
+
+        {/* Right side: ring + proficiency + quiz btn + chevron */}
+        <div className="flex items-center gap-3 shrink-0">
+          <LessonRing pct={unit.completionPercent} />
+
+          {unit.quizScore !== null && (
+            <div className="text-right hidden sm:block">
+              <div className="text-sm font-extrabold text-violet-600 dark:text-violet-400 leading-none tabular-nums">
+                {unit.quizScore}%
+              </div>
+              <div className="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5">
+                Proficiency
+              </div>
+            </div>
+          )}
+
           {unit.questionCount > 0 && unit.completionPercent > 0 && (
             <Link
               href={`/quiz/${unit.id}`}
+              onClick={(e) => e.stopPropagation()}
               className="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900 transition-colors"
             >
               Quiz
             </Link>
           )}
-        </div>
 
-        {/* Stats row */}
-        <div className="flex items-center gap-4">
-          {/* Lesson circle progress */}
-          <div className="flex items-center gap-2.5">
-            <LessonRing pct={unit.completionPercent} />
-            <div>
-              <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">Lessons</div>
-              <div className="text-xs text-slate-400 dark:text-slate-500">{unit.completionPercent}% complete</div>
+          <ChevronRight
+            className={cn(
+              "w-4 h-4 text-slate-400 transition-transform duration-200 shrink-0",
+              open && "rotate-90"
+            )}
+          />
+        </div>
+      </div>
+
+      {/* Collapsible lesson list */}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="lessons"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="overflow-hidden"
+          >
+            <div className="divide-y divide-slate-50 dark:divide-slate-800 border-t border-slate-100 dark:border-slate-800">
+              {unit.lessons.map((lesson) => (
+                <LessonRow key={lesson.id} lesson={lesson} />
+              ))}
             </div>
-          </div>
-
-          {/* Proficiency — only after first quiz attempt */}
-          {unit.quizScore !== null && (
-            <>
-              <div className="w-px h-8 bg-slate-200 dark:bg-slate-700" />
-              <div>
-                <div className="text-lg font-extrabold text-violet-600 dark:text-violet-400 leading-none tabular-nums">
-                  {unit.quizScore}%
-                </div>
-                <div className="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">
-                  Proficiency
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Lessons */}
-      <div className="divide-y divide-slate-50 dark:divide-slate-800">
-        {unit.lessons.map((lesson) => (
-          <LessonRow key={lesson.id} lesson={lesson} />
-        ))}
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }
