@@ -9,8 +9,6 @@ interface AirspaceClass {
   id: ClassId
   label: string
   color: string
-  bgClass: string
-  borderClass: string
   altDesc: string
   entry: string
   radio: string
@@ -24,9 +22,7 @@ const CLASSES: AirspaceClass[] = [
   {
     id: "A",
     label: "Class A",
-    color: "#1e3a8a",
-    bgClass: "bg-blue-950",
-    borderClass: "border-blue-700",
+    color: "#1e40af",
     altDesc: "FL180 (18,000 ft MSL) to FL600",
     entry: "IFR clearance required — no VFR operations permitted",
     radio: "Yes — IFR clearance (ATC contact mandatory)",
@@ -39,8 +35,6 @@ const CLASSES: AirspaceClass[] = [
     id: "B",
     label: "Class B",
     color: "#0369a1",
-    bgClass: "bg-sky-950",
-    borderClass: "border-sky-600",
     altDesc: "Surface to 10,000 ft MSL — 'upside-down wedding cake' shape, 3 shelves",
     entry: "Explicit ATC clearance: must hear 'Cleared into Class Bravo'",
     radio: "Yes — explicit clearance required before entry (not just contact)",
@@ -53,8 +47,6 @@ const CLASSES: AirspaceClass[] = [
     id: "C",
     label: "Class C",
     color: "#86198f",
-    bgClass: "bg-fuchsia-950",
-    borderClass: "border-fuchsia-700",
     altDesc: "Inner (0–5 nm): surface to 4,000 AGL · Outer (5–10 nm): 1,200 AGL to 4,000 AGL",
     entry: "Two-way radio contact established — ATC must acknowledge your call sign",
     radio: "Yes — 'N12345, standby' counts; a flat 'unable' does NOT",
@@ -67,8 +59,6 @@ const CLASSES: AirspaceClass[] = [
     id: "D",
     label: "Class D",
     color: "#1d4ed8",
-    bgClass: "bg-blue-950",
-    borderClass: "border-blue-600",
     altDesc: "Surface to ~2,500 ft AGL · ~4.4 nm radius",
     entry: "Two-way radio contact established with the tower",
     radio: "Yes — 'N12345, 3 miles north, landing' before entry",
@@ -81,8 +71,6 @@ const CLASSES: AirspaceClass[] = [
     id: "E",
     label: "Class E",
     color: "#7e22ce",
-    bgClass: "bg-purple-950",
-    borderClass: "border-purple-700",
     altDesc: "Various floors: 700 AGL (transition areas near airports), 1,200 AGL (general), or surface (some airports)",
     entry: "No clearance required for VFR flight",
     radio: "No",
@@ -95,8 +83,6 @@ const CLASSES: AirspaceClass[] = [
     id: "G",
     label: "Class G",
     color: "#475569",
-    bgClass: "bg-slate-800",
-    borderClass: "border-slate-600",
     altDesc: "Surface to base of Class E (typically 700 or 1,200 AGL). Above 14,500 MSL in some remote areas.",
     entry: "No clearance, no communication required",
     radio: "No",
@@ -306,7 +292,8 @@ export default function AirspaceDiagram() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.18 }}
-          className={`rounded-xl border p-3 ${cls.bgClass} ${cls.borderClass}`}
+          className="rounded-xl border p-3"
+          style={{ borderColor: cls.color + "44", backgroundColor: cls.color + "0e" }}
         >
           <div className="text-sm font-bold mb-2.5" style={{ color: cls.color }}>
             {cls.label}
@@ -321,7 +308,7 @@ export default function AirspaceDiagram() {
             <InfoRow label="VFR night wx" value={cls.wxNight} />
           </div>
 
-          <p className="text-xs text-slate-300 leading-relaxed">{cls.notes}</p>
+          <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{cls.notes}</p>
         </motion.div>
       </AnimatePresence>
     </div>
@@ -331,8 +318,8 @@ export default function AirspaceDiagram() {
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex gap-2">
-      <span className="shrink-0 font-semibold w-20 text-slate-400">{label}:</span>
-      <span className="text-slate-300 leading-tight">{value}</span>
+      <span className="shrink-0 font-semibold w-20 text-slate-500 dark:text-slate-400">{label}:</span>
+      <span className="text-slate-800 dark:text-slate-200 leading-tight">{value}</span>
     </div>
   )
 }
