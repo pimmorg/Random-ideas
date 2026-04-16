@@ -13,6 +13,8 @@ import {
   Award,
   Zap,
   Trophy,
+  ClipboardList,
+  PlaneTakeoff,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import AIChatButton from "@/components/chat/AIChatButton"
@@ -116,6 +118,9 @@ export default function DashboardClient({
           label="daily goal"
         />
       </div>
+
+      {/* Exam Readiness Summary */}
+      <ReadinessSummary units={units} overallCompletion={overallCompletion} />
 
       {/* Continue learning CTA */}
       {currentLesson && (
@@ -266,6 +271,125 @@ function UnitCard({ unit, unitIndex }: { unit: Unit; unitIndex: number }) {
         ))}
       </div>
     </motion.div>
+  )
+}
+
+// ── Readiness helpers ───────────────────────────────────────────────────────
+
+function masteryScore(level: string) {
+  if (level === "gold")   return 100
+  if (level === "silver") return 87
+  if (level === "bronze") return 72
+  return 0
+}
+
+function readinessStatus(pct: number): { label: string; color: string; ring: string } {
+  if (pct >= 85) return { label: "Well prepared",      color: "text-emerald-600 dark:text-emerald-400", ring: "#10b981" }
+  if (pct >= 70) return { label: "Nearly ready",       color: "text-blue-600 dark:text-blue-400",      ring: "#3b82f6" }
+  if (pct >= 50) return { label: "Making progress",    color: "text-amber-600 dark:text-amber-400",    ring: "#f59e0b" }
+  if (pct >= 25) return { label: "Building foundation", color: "text-slate-500 dark:text-slate-400",   ring: "#64748b" }
+  return            { label: "Just starting",          color: "text-slate-400 dark:text-slate-500",    ring: "#94a3b8" }
+}
+
+function ReadinessSummary({ units, overallCompletion }: { units: Unit[]; overallCompletion: number }) {
+  const testableUnits = units.filter(u => u.questionCount > 0)
+
+  // Written: 65% quiz mastery, 35% lesson completion
+  const avgQuiz = testableUnits.length > 0
+    ? testableUnits.reduce((s, u) => s + masteryScore(u.masteryLevel), 0) / testableUnits.length
+    : 0
+  const avgLesson = units.length > 0
+    ? units.reduce((s, u) => s + u.completionPercent, 0) / units.length
+    : 0
+  const written = Math.round(avgQuiz * 0.65 + avgLesson * 0.35)
+
+  // Checkride: knowledge (written) + depth of lesson coverage, capped lower
+  // — practical flying can't be measured, so study progress caps around 80%
+  const checkride = Math.min(Math.round(written * 0.6 + overallCompletion * 0.25), 80)
+
+  const ws = readinessStatus(written)
+  const cs = readinessStatus(checkride)
+
+  return (
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+      <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
+        <Target className="w-4 h-4 text-blue-500 shrink-0" />
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Exam Readiness</h2>
+        <span className="ml-auto text-xs text-slate-400">Based on quiz & lesson progress</span>
+      </div>
+      <div className="grid grid-cols-2 divide-x divide-slate-100 dark:divide-slate-800">
+        <ReadinessCard
+          icon={<ClipboardList className="w-4 h-4" />}
+          title="Written"
+          subtitle="FAA Knowledge Test"
+          pct={written}
+          status={ws}
+          note={written < 70 ? "70% needed to pass" : "Pass threshold met"}
+        />
+        <ReadinessCard
+          icon={<PlaneTakeoff className="w-4 h-4" />}
+          title="Checkride"
+          subtitle="Practical Test (ACS)"
+          pct={checkride}
+          status={cs}
+          note="Study readiness only — flight hrs required"
+        />
+      </div>
+    </div>
+  )
+}
+
+function ReadinessCard({
+  icon, title, subtitle, pct, status, note,
+}: {
+  icon: React.ReactNode
+  title: string
+  subtitle: string
+  pct: number
+  status: { label: string; color: string; ring: string }
+  note: string
+}) {
+  const circumference = 2 * Math.PI * 36 // r=36 → ~226.2
+  const dash = (pct / 100) * circumference
+
+  return (
+    <div className="p-4 flex flex-col items-center text-center gap-2">
+      {/* Ring */}
+      <svg viewBox="0 0 100 100" className="w-24 h-24">
+        {/* Track */}
+        <circle cx="50" cy="50" r="36" fill="none" stroke="#e2e8f0" strokeWidth="8"
+          className="dark:[stroke:#1e293b]" />
+        {/* Progress arc */}
+        <circle
+          cx="50" cy="50" r="36" fill="none"
+          stroke={status.ring} strokeWidth="8" strokeLinecap="round"
+          strokeDasharray={`${dash} ${circumference}`}
+          transform="rotate(-90 50 50)"
+          style={{ transition: "stroke-dasharray 0.6s ease" }}
+        />
+        {/* Percentage */}
+        <text x="50" y="46" textAnchor="middle" fontSize="18" fontWeight="800"
+          fill={status.ring}>{pct}%</text>
+        <text x="50" y="60" textAnchor="middle" fontSize="8" fill="#94a3b8">ready</text>
+      </svg>
+
+      {/* Label */}
+      <div>
+        <div className="flex items-center justify-center gap-1.5 text-slate-500 dark:text-slate-400 mb-0.5">
+          {icon}
+          <span className="text-xs font-semibold uppercase tracking-wide">{title}</span>
+        </div>
+        <div className="text-xs text-slate-400 dark:text-slate-500">{subtitle}</div>
+      </div>
+
+      {/* Status badge */}
+      <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 ${status.color}`}>
+        {status.label}
+      </span>
+
+      {/* Note */}
+      <p className="text-xs text-slate-400 dark:text-slate-500 leading-tight">{note}</p>
+    </div>
   )
 }
 
