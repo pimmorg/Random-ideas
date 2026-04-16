@@ -102,29 +102,37 @@ The stall speed listed in your POH (VS0, VS1) assumes a specific bank angle and 
       {
         lessonId: l2.id,
         title: "What Is a Stall?",
-        content: `A **stall** is an aerodynamic condition, not an airspeed condition. It occurs the moment the wing exceeds its critical angle of attack — typically around 15–18° depending on the airfoil.
+        content: `A **stall** is an aerodynamic condition, not an airspeed condition. It occurs the moment the wing exceeds its **critical angle of attack** — typically around 15–18° depending on the airfoil.
 
-At this point, smooth **laminar airflow** over the upper wing surface breaks down into turbulent separated flow. The wing can no longer generate enough lift to support the aircraft's weight.
+At this point, smooth laminar airflow over the upper wing surface breaks down into **turbulent separated flow**. The wing can no longer generate enough lift to support the aircraft's weight.
+
+Step through the four phases below to see exactly what happens to the airflow and lift at each stage — including recovery:
+
+[DIAGRAM:stall-recovery]
 
 :::warning
-The #1 misconception: stalls happen when you "run out of airspeed." **Wrong.** You can stall at full throttle, in a dive, or while maneuvering at high speed. AoA is the only factor that matters.
+The #1 misconception: stalls happen when you "run out of airspeed." **Wrong.** You can stall at full throttle, in a dive, or in a steep turn at high speed. Angle of attack is the only factor that matters.
 :::`,
         sortOrder: 1,
       },
       {
         lessonId: l2.id,
         title: "Stall Recovery",
-        content: `The standard stall recovery procedure is three steps, executed promptly:
+        content: `The standard stall recovery procedure is three steps, executed simultaneously and promptly:
 
-1. **Reduce angle of attack** — apply forward pressure on the yoke/stick to lower the nose and un-stall the wings
+1. **Reduce angle of attack** — apply forward pressure on the yoke/stick to un-stall the wings
 2. **Apply full power** — maximize thrust to minimize altitude loss
 3. **Level the wings** — use coordinated rudder to stop any rolling tendency
 
 :::tip
-The FAA recommends the mnemonic **"Pitch, Power, Rudder"** — though in practice, all three happen nearly simultaneously.
+The FAA mnemonic is **"Pitch, Power, Rudder"** — in practice, all three happen nearly at the same moment.
 :::
 
-Altitude loss during recovery varies. A clean stall at altitude may cost only 50–100 feet. An accelerated or departure stall can be far more dramatic. **Prompt recognition and recovery are critical.**`,
+Altitude loss varies significantly by type of stall. A power-off stall at altitude may cost only 50–100 feet. An **accelerated stall** or **departure stall** (at high power, low altitude) can cost several hundred feet. Prompt recognition is everything.
+
+:::warning
+The most dangerous stalls occur during the **base-to-final turn** — a common scenario where the pilot over-banks and pulls back to avoid overshooting the runway. This can lead to a low-altitude, unrecoverable spin. Recognize the warning signs early.
+:::`,
         sortOrder: 2,
       },
     ],
