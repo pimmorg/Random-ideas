@@ -288,42 +288,44 @@ Before any flight, know your aircraft's **total electrical load**. Add the amps 
     ],
   })
 
-  // Questions for unit1
-  const existingQ1 = await prisma.question.count({ where: { unitId: unit1.id } })
-  if (existingQ1 === 0) {
+  // Questions for unit1 — always refresh
+  await prisma.questionOption.deleteMany({ where: { question: { unitId: unit1.id } } })
+  await prisma.question.deleteMany({ where: { unitId: unit1.id } })
+  {
     const q1 = await prisma.question.create({ data: { unitId: unit1.id, question: "A stall occurs when:", explanation: "A stall always occurs at the critical angle of attack, regardless of airspeed or aircraft attitude. It is an aerodynamic condition, not an airspeed condition.", farAimRef: "FAA-H-8083-25B Ch.4", difficulty: "easy" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: q1.id, text: "The wing exceeds its critical angle of attack", isCorrect: true, sortOrder: 1 },
-      { questionId: q1.id, text: "Airspeed drops below VS0", isCorrect: false, sortOrder: 2 },
-      { questionId: q1.id, text: "The throttle is reduced to idle", isCorrect: false, sortOrder: 3 },
+      { questionId: q1.id, text: "Airspeed drops below VS0", isCorrect: false, sortOrder: 1 },
+      { questionId: q1.id, text: "The throttle is reduced to idle", isCorrect: false, sortOrder: 2 },
+      { questionId: q1.id, text: "The wing exceeds its critical angle of attack", isCorrect: true, sortOrder: 3 },
       { questionId: q1.id, text: "The aircraft is in a nose-high attitude", isCorrect: false, sortOrder: 4 },
     ]})
 
     const q2 = await prisma.question.create({ data: { unitId: unit1.id, question: "In straight-and-level unaccelerated flight, which statement is true?", explanation: "In unaccelerated (constant velocity) flight, all four forces are in equilibrium: lift equals weight, and thrust equals drag.", farAimRef: "FAA-H-8083-25B Ch.4", difficulty: "easy" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: q2.id, text: "Lift equals weight and thrust equals drag", isCorrect: true, sortOrder: 1 },
-      { questionId: q2.id, text: "Lift exceeds weight and thrust exceeds drag", isCorrect: false, sortOrder: 2 },
-      { questionId: q2.id, text: "Thrust exceeds drag and lift equals weight", isCorrect: false, sortOrder: 3 },
-      { questionId: q2.id, text: "Drag exceeds thrust and lift equals weight", isCorrect: false, sortOrder: 4 },
+      { questionId: q2.id, text: "Lift exceeds weight and thrust exceeds drag", isCorrect: false, sortOrder: 1 },
+      { questionId: q2.id, text: "Thrust exceeds drag and lift equals weight", isCorrect: false, sortOrder: 2 },
+      { questionId: q2.id, text: "Drag exceeds thrust and lift equals weight", isCorrect: false, sortOrder: 3 },
+      { questionId: q2.id, text: "Lift equals weight and thrust equals drag", isCorrect: true, sortOrder: 4 },
     ]})
 
     const q3 = await prisma.question.create({ data: { unitId: unit1.id, question: "What is the correct stall recovery procedure?", explanation: "Stall recovery requires reducing angle of attack (forward pressure), applying full power, and leveling the wings with coordinated rudder to minimize altitude loss.", difficulty: "medium" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: q3.id, text: "Reduce AoA, full power, level wings with rudder", isCorrect: true, sortOrder: 1 },
-      { questionId: q3.id, text: "Apply back pressure and add power", isCorrect: false, sortOrder: 2 },
+      { questionId: q3.id, text: "Apply back pressure and add power", isCorrect: false, sortOrder: 1 },
+      { questionId: q3.id, text: "Reduce AoA, full power, level wings with rudder", isCorrect: true, sortOrder: 2 },
       { questionId: q3.id, text: "Reduce power and lower the nose sharply", isCorrect: false, sortOrder: 3 },
       { questionId: q3.id, text: "Apply aileron in the direction of the stall", isCorrect: false, sortOrder: 4 },
     ]})
   }
 
-  // Questions for unit2 (fuel + electrical)
-  const existingQ2 = await prisma.question.count({ where: { unitId: unit2.id } })
-  if (existingQ2 === 0) {
+  // Questions for unit2 (fuel + electrical) — always refresh
+  await prisma.questionOption.deleteMany({ where: { question: { unitId: unit2.id } } })
+  await prisma.question.deleteMany({ where: { unitId: unit2.id } })
+  {
     const q4 = await prisma.question.create({ data: { unitId: unit2.id, question: "Most training aircraft use which grade of aviation fuel?", explanation: "100LL (low-lead) avgas is the most common fuel for piston aircraft. It is dyed blue for easy identification.", difficulty: "easy" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: q4.id, text: "100LL (low-lead), dyed blue", isCorrect: true, sortOrder: 1 },
-      { questionId: q4.id, text: "80/87, dyed red", isCorrect: false, sortOrder: 2 },
-      { questionId: q4.id, text: "Jet-A, dyed clear", isCorrect: false, sortOrder: 3 },
+      { questionId: q4.id, text: "80/87, dyed red", isCorrect: false, sortOrder: 1 },
+      { questionId: q4.id, text: "Jet-A, dyed clear", isCorrect: false, sortOrder: 2 },
+      { questionId: q4.id, text: "100LL (low-lead), dyed blue", isCorrect: true, sortOrder: 3 },
       { questionId: q4.id, text: "100LL, dyed green", isCorrect: false, sortOrder: 4 },
     ]})
 
@@ -345,25 +347,25 @@ Before any flight, know your aircraft's **total electrical load**. Add the amps 
 
     const q7 = await prisma.question.create({ data: { unitId: unit2.id, question: "The primary source of electrical power during flight is the:", explanation: "The alternator, driven by the engine, is the primary power source in flight. It powers all systems and charges the battery. The battery is a backup source used mainly for starting and emergency power.", farAimRef: "FAA-H-8083-25B Ch.7", difficulty: "easy" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: q7.id, text: "Alternator", isCorrect: true, sortOrder: 1 },
-      { questionId: q7.id, text: "Battery", isCorrect: false, sortOrder: 2 },
-      { questionId: q7.id, text: "Voltage regulator", isCorrect: false, sortOrder: 3 },
-      { questionId: q7.id, text: "Bus bar", isCorrect: false, sortOrder: 4 },
+      { questionId: q7.id, text: "Battery", isCorrect: false, sortOrder: 1 },
+      { questionId: q7.id, text: "Voltage regulator", isCorrect: false, sortOrder: 2 },
+      { questionId: q7.id, text: "Bus bar", isCorrect: false, sortOrder: 3 },
+      { questionId: q7.id, text: "Alternator", isCorrect: true, sortOrder: 4 },
     ]})
 
     const q8 = await prisma.question.create({ data: { unitId: unit2.id, question: "If an alternator failure occurs in flight, the ammeter will show:", explanation: "When the alternator fails, it stops supplying current. The battery begins discharging to meet the electrical load, so the ammeter will show a discharge (negative) reading, indicating more current is being drawn than generated.", farAimRef: "FAA-H-8083-25B Ch.7", difficulty: "medium" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: q8.id, text: "A discharge (negative or zero) reading", isCorrect: true, sortOrder: 1 },
-      { questionId: q8.id, text: "A high positive charge reading", isCorrect: false, sortOrder: 2 },
+      { questionId: q8.id, text: "A high positive charge reading", isCorrect: false, sortOrder: 1 },
+      { questionId: q8.id, text: "A discharge (negative or zero) reading", isCorrect: true, sortOrder: 2 },
       { questionId: q8.id, text: "No change — the battery compensates automatically", isCorrect: false, sortOrder: 3 },
       { questionId: q8.id, text: "A fluctuating reading as voltage regulator compensates", isCorrect: false, sortOrder: 4 },
     ]})
 
     const q9 = await prisma.question.create({ data: { unitId: unit2.id, question: "A circuit breaker trips in flight. After waiting 1 minute, you reset it and it trips again. You should:", explanation: "A circuit breaker that trips repeatedly indicates a fault in that circuit. FAA guidance states to reset a tripped CB only once. If it trips again, leave it out — resetting a faulted circuit risks fire or further electrical damage.", difficulty: "medium" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: q9.id, text: "Leave it out and assume there is a circuit fault", isCorrect: true, sortOrder: 1 },
-      { questionId: q9.id, text: "Reset it again immediately", isCorrect: false, sortOrder: 2 },
-      { questionId: q9.id, text: "Turn off the master switch and reset all breakers", isCorrect: false, sortOrder: 3 },
+      { questionId: q9.id, text: "Reset it again immediately", isCorrect: false, sortOrder: 1 },
+      { questionId: q9.id, text: "Turn off the master switch and reset all breakers", isCorrect: false, sortOrder: 2 },
+      { questionId: q9.id, text: "Leave it out and assume there is a circuit fault", isCorrect: true, sortOrder: 3 },
       { questionId: q9.id, text: "Declare an emergency and land as soon as possible", isCorrect: false, sortOrder: 4 },
     ]})
   }
@@ -439,15 +441,16 @@ The most common error is losing altitude in the first 90° of the turn. As soon 
     ],
   })
 
-  // Questions for unit3 (Performance Maneuvers)
-  const existingQ3 = await prisma.question.count({ where: { unitId: unit3.id } })
-  if (existingQ3 === 0) {
+  // Questions for unit3 (Performance Maneuvers) — always refresh
+  await prisma.questionOption.deleteMany({ where: { question: { unitId: unit3.id } } })
+  await prisma.question.deleteMany({ where: { unitId: unit3.id } })
+  {
     const q10 = await prisma.question.create({ data: { unitId: unit3.id, question: "In a 45° banked turn, the load factor is approximately:", explanation: "Load factor = 1/cos(bank angle). At 45°, cos(45°) ≈ 0.707, so load factor = 1/0.707 ≈ 1.41G. The aircraft effectively weighs 41% more than in straight-and-level flight.", farAimRef: "FAA-H-8083-25B Ch.5", difficulty: "medium" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: q10.id, text: "1.4G", isCorrect: true, sortOrder: 1 },
-      { questionId: q10.id, text: "1.0G", isCorrect: false, sortOrder: 2 },
-      { questionId: q10.id, text: "2.0G", isCorrect: false, sortOrder: 3 },
-      { questionId: q10.id, text: "1.2G", isCorrect: false, sortOrder: 4 },
+      { questionId: q10.id, text: "1.0G", isCorrect: false, sortOrder: 1 },
+      { questionId: q10.id, text: "2.0G", isCorrect: false, sortOrder: 2 },
+      { questionId: q10.id, text: "1.2G", isCorrect: false, sortOrder: 3 },
+      { questionId: q10.id, text: "1.4G", isCorrect: true, sortOrder: 4 },
     ]})
 
     const q11 = await prisma.question.create({ data: { unitId: unit3.id, question: "At 60° of bank, the load factor is:", explanation: "Load factor = 1/cos(60°) = 1/0.5 = 2.0G. At this bank angle, the aircraft's apparent weight has doubled and the stall speed has increased by approximately 41%.", farAimRef: "FAA-H-8083-25B Ch.5", difficulty: "medium" } })
@@ -460,16 +463,16 @@ The most common error is losing altitude in the first 90° of the turn. As soon 
 
     const q12 = await prisma.question.create({ data: { unitId: unit3.id, question: "During a steep turn, the pilot must add back pressure primarily because:", explanation: "When the aircraft banks, the total lift vector tilts. The vertical component of lift decreases. To maintain altitude, the total lift (and therefore the vertical component) must increase, which requires increased angle of attack — achieved by pulling back on the yoke.", farAimRef: "FAA-H-8083-25B Ch.5", difficulty: "medium" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: q12.id, text: "The vertical component of lift decreases as bank increases", isCorrect: true, sortOrder: 1 },
-      { questionId: q12.id, text: "The aircraft nose tends to pitch up automatically", isCorrect: false, sortOrder: 2 },
-      { questionId: q12.id, text: "Back pressure prevents exceeding VNE", isCorrect: false, sortOrder: 3 },
+      { questionId: q12.id, text: "The aircraft nose tends to pitch up automatically", isCorrect: false, sortOrder: 1 },
+      { questionId: q12.id, text: "Back pressure prevents exceeding VNE", isCorrect: false, sortOrder: 2 },
+      { questionId: q12.id, text: "The vertical component of lift decreases as bank increases", isCorrect: true, sortOrder: 3 },
       { questionId: q12.id, text: "The ailerons produce adverse yaw", isCorrect: false, sortOrder: 4 },
     ]})
 
     const q13 = await prisma.question.create({ data: { unitId: unit3.id, question: "The private pilot ACS steep turn standard requires:", explanation: "The ACS standard for steep turns is 45° of bank, maintaining altitude within ±100 feet, airspeed within ±10 knots, and rolling out within ±10° of the entry heading.", farAimRef: "FAA-S-ACS-6B V.A", difficulty: "easy" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: q13.id, text: "45° bank, ±100 ft altitude, ±10 kts airspeed", isCorrect: true, sortOrder: 1 },
-      { questionId: q13.id, text: "60° bank, ±200 ft altitude, ±15 kts airspeed", isCorrect: false, sortOrder: 2 },
+      { questionId: q13.id, text: "60° bank, ±200 ft altitude, ±15 kts airspeed", isCorrect: false, sortOrder: 1 },
+      { questionId: q13.id, text: "45° bank, ±100 ft altitude, ±10 kts airspeed", isCorrect: true, sortOrder: 2 },
       { questionId: q13.id, text: "30° bank, ±50 ft altitude, ±5 kts airspeed", isCorrect: false, sortOrder: 3 },
       { questionId: q13.id, text: "45° bank, ±200 ft altitude, ±20 kts airspeed", isCorrect: false, sortOrder: 4 },
     ]})
@@ -548,17 +551,14 @@ All three ground reference maneuvers (turns around a point, S-turns, rectangular
     ],
   })
 
-  // Quiz questions for ground reference maneuvers (add to unit3)
-  const existingGRM = await prisma.question.count({
-    where: { unitId: unit3.id, question: { contains: "turns around a point" } },
-  })
-  if (existingGRM === 0) {
+  // Quiz questions for ground reference maneuvers (already deleted above with unit3)
+  {
     const q14 = await prisma.question.create({ data: { unitId: unit3.id, question: "During turns around a point, why must the pilot use a steeper bank on the downwind side?", explanation: "On the downwind side of the orbit, the aircraft has a tailwind, increasing groundspeed. A higher groundspeed produces a wider turn radius at a given bank angle. To maintain the same radius, the pilot must increase bank angle on the downwind side.", farAimRef: "FAA-H-8083-3C Ch.6", difficulty: "medium" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: q14.id, text: "Higher groundspeed requires more bank to maintain the radius", isCorrect: true, sortOrder: 1 },
-      { questionId: q14.id, text: "The aircraft tends to pitch down in a tailwind", isCorrect: false, sortOrder: 2 },
-      { questionId: q14.id, text: "Lift decreases in tailwind conditions", isCorrect: false, sortOrder: 3 },
-      { questionId: q14.id, text: "ATC requires steeper banks when flying downwind", isCorrect: false, sortOrder: 4 },
+      { questionId: q14.id, text: "The aircraft tends to pitch down in a tailwind", isCorrect: false, sortOrder: 1 },
+      { questionId: q14.id, text: "Lift decreases in tailwind conditions", isCorrect: false, sortOrder: 2 },
+      { questionId: q14.id, text: "ATC requires steeper banks when flying downwind", isCorrect: false, sortOrder: 3 },
+      { questionId: q14.id, text: "Higher groundspeed requires more bank to maintain the radius", isCorrect: true, sortOrder: 4 },
     ]})
 
     const q15 = await prisma.question.create({ data: { unitId: unit3.id, question: "During S-turns across a road, where should the steepest bank occur?", explanation: "The steepest bank occurs immediately after crossing the road heading downwind. At that point groundspeed is highest (tailwind), so the most bank is required. As the aircraft turns into the wind, groundspeed decreases and bank is progressively reduced.", farAimRef: "FAA-H-8083-3C Ch.6", difficulty: "medium" } })
@@ -571,16 +571,16 @@ All three ground reference maneuvers (turns around a point, S-turns, rectangular
 
     const q16 = await prisma.question.create({ data: { unitId: unit3.id, question: "The rectangular course is most useful for teaching which practical skill?", explanation: "The rectangular course directly simulates the airport traffic pattern — flying legs at constant distance from a ground reference while compensating for wind with crab angles. It trains the judgment needed for every pattern at every airport.", farAimRef: "FAA-H-8083-3C Ch.6", difficulty: "easy" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: q16.id, text: "Traffic pattern procedures and wind correction", isCorrect: true, sortOrder: 1 },
-      { questionId: q16.id, text: "Stall recovery at low altitude", isCorrect: false, sortOrder: 2 },
-      { questionId: q16.id, text: "Instrument scan techniques", isCorrect: false, sortOrder: 3 },
+      { questionId: q16.id, text: "Stall recovery at low altitude", isCorrect: false, sortOrder: 1 },
+      { questionId: q16.id, text: "Instrument scan techniques", isCorrect: false, sortOrder: 2 },
+      { questionId: q16.id, text: "Traffic pattern procedures and wind correction", isCorrect: true, sortOrder: 3 },
       { questionId: q16.id, text: "Engine failure procedures", isCorrect: false, sortOrder: 4 },
     ]})
 
     const q17 = await prisma.question.create({ data: { unitId: unit3.id, question: "What altitude is typically used for ground reference maneuvers?", explanation: "Ground reference maneuvers are conducted at 600–1,000 ft AGL — low enough to clearly reference the ground for track control, but high enough to allow recovery from errors. The ACS specifies this range.", farAimRef: "FAA-S-ACS-6B V.B", difficulty: "easy" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: q17.id, text: "600–1,000 ft AGL", isCorrect: true, sortOrder: 1 },
-      { questionId: q17.id, text: "1,500–2,000 ft AGL", isCorrect: false, sortOrder: 2 },
+      { questionId: q17.id, text: "1,500–2,000 ft AGL", isCorrect: false, sortOrder: 1 },
+      { questionId: q17.id, text: "600–1,000 ft AGL", isCorrect: true, sortOrder: 2 },
       { questionId: q17.id, text: "300–500 ft AGL", isCorrect: false, sortOrder: 3 },
       { questionId: q17.id, text: "2,500 ft MSL", isCorrect: false, sortOrder: 4 },
     ]})
@@ -661,15 +661,16 @@ The memory aid for B/C/D/E cloud clearance: **"152"** — 500 below (round to "1
     ],
   })
 
-  // Quiz questions for unit4
-  const existingQ4 = await prisma.question.count({ where: { unitId: unit4.id } })
-  if (existingQ4 === 0) {
+  // Quiz questions for unit4 — always refresh
+  await prisma.questionOption.deleteMany({ where: { question: { unitId: unit4.id } } })
+  await prisma.question.deleteMany({ where: { unitId: unit4.id } })
+  {
     const qa = await prisma.question.create({ data: { unitId: unit4.id, question: "To enter Class B airspace, a pilot must:", explanation: "Class B requires an explicit ATC clearance — the pilot must hear the words 'Cleared into Class Bravo.' Simply establishing radio contact or receiving a squawk code is not sufficient.", farAimRef: "14 CFR 91.131", difficulty: "easy" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: qa.id, text: "Receive an explicit ATC clearance", isCorrect: true, sortOrder: 1 },
-      { questionId: qa.id, text: "Establish two-way radio communication", isCorrect: false, sortOrder: 2 },
-      { questionId: qa.id, text: "File a VFR flight plan", isCorrect: false, sortOrder: 3 },
-      { questionId: qa.id, text: "Have an instrument rating", isCorrect: false, sortOrder: 4 },
+      { questionId: qa.id, text: "Establish two-way radio communication", isCorrect: false, sortOrder: 1 },
+      { questionId: qa.id, text: "File a VFR flight plan", isCorrect: false, sortOrder: 2 },
+      { questionId: qa.id, text: "Have an instrument rating", isCorrect: false, sortOrder: 3 },
+      { questionId: qa.id, text: "Receive an explicit ATC clearance", isCorrect: true, sortOrder: 4 },
     ]})
 
     const qb = await prisma.question.create({ data: { unitId: unit4.id, question: "Approaching a Class D airport, ATC responds 'N12345, standby.' The pilot:", explanation: "In Class C and D airspace, entry requires two-way radio communication — ATC must acknowledge your call sign. 'Standby' with your call sign counts as communication. The pilot may enter and continue to communicate. Only a flat 'unable' or no response means you cannot enter.", farAimRef: "14 CFR 91.129", difficulty: "medium" } })
@@ -682,16 +683,16 @@ The memory aid for B/C/D/E cloud clearance: **"152"** — 500 below (round to "1
 
     const qc = await prisma.question.create({ data: { unitId: unit4.id, question: "The VFR weather minimums in Class G airspace below 1,200 ft AGL during the day are:", explanation: "Class G airspace below 1,200 AGL during the day has the most permissive VFR minimums: 1 SM visibility and clear of clouds. At night, the minimums increase to 3 SM and standard cloud clearances.", farAimRef: "14 CFR 91.155", difficulty: "medium" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: qc.id, text: "1 SM visibility, clear of clouds", isCorrect: true, sortOrder: 1 },
-      { questionId: qc.id, text: "3 SM visibility, 500/1,000/2,000 cloud clearance", isCorrect: false, sortOrder: 2 },
-      { questionId: qc.id, text: "3 SM visibility, clear of clouds", isCorrect: false, sortOrder: 3 },
+      { questionId: qc.id, text: "3 SM visibility, 500/1,000/2,000 cloud clearance", isCorrect: false, sortOrder: 1 },
+      { questionId: qc.id, text: "3 SM visibility, clear of clouds", isCorrect: false, sortOrder: 2 },
+      { questionId: qc.id, text: "1 SM visibility, clear of clouds", isCorrect: true, sortOrder: 3 },
       { questionId: qc.id, text: "5 SM visibility, 1,000/1,000/1 SM cloud clearance", isCorrect: false, sortOrder: 4 },
     ]})
 
     const qd = await prisma.question.create({ data: { unitId: unit4.id, question: "Class E airspace typically begins at what altitude in a transition area near an airport?", explanation: "Transition areas (shown as a magenta vignette on sectional charts) have a Class E floor of 700 ft AGL. This lower floor protects IFR aircraft on instrument approaches from uncontrolled Class G traffic below. Away from airports, Class E generally starts at 1,200 AGL.", farAimRef: "FAA-H-8083-25B Ch.15", difficulty: "medium" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: qd.id, text: "700 ft AGL", isCorrect: true, sortOrder: 1 },
-      { questionId: qd.id, text: "1,200 ft AGL", isCorrect: false, sortOrder: 2 },
+      { questionId: qd.id, text: "1,200 ft AGL", isCorrect: false, sortOrder: 1 },
+      { questionId: qd.id, text: "700 ft AGL", isCorrect: true, sortOrder: 2 },
       { questionId: qd.id, text: "2,500 ft AGL", isCorrect: false, sortOrder: 3 },
       { questionId: qd.id, text: "FL180", isCorrect: false, sortOrder: 4 },
     ]})
@@ -837,15 +838,16 @@ Density altitude is **pressure altitude corrected for non-standard temperature**
     ],
   })
 
-  // Quiz questions for unit5
-  const existingQ5 = await prisma.question.count({ where: { unitId: unit5.id } })
-  if (existingQ5 === 0) {
+  // Quiz questions for unit5 — always refresh
+  await prisma.questionOption.deleteMany({ where: { question: { unitId: unit5.id } } })
+  await prisma.question.deleteMany({ where: { unitId: unit5.id } })
+  {
     const qw1 = await prisma.question.create({ data: { unitId: unit5.id, question: "The most hazardous stage of a thunderstorm is the:", explanation: "The mature stage is the most dangerous. It contains both strong updrafts and downdrafts simultaneously, the heaviest precipitation, largest hail, most severe turbulence, and the greatest lightning activity.", farAimRef: "FAA-H-8083-28 Ch.11", difficulty: "easy" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: qw1.id, text: "Mature stage", isCorrect: true, sortOrder: 1 },
-      { questionId: qw1.id, text: "Cumulus stage", isCorrect: false, sortOrder: 2 },
-      { questionId: qw1.id, text: "Dissipating stage", isCorrect: false, sortOrder: 3 },
-      { questionId: qw1.id, text: "Anvil stage", isCorrect: false, sortOrder: 4 },
+      { questionId: qw1.id, text: "Cumulus stage", isCorrect: false, sortOrder: 1 },
+      { questionId: qw1.id, text: "Dissipating stage", isCorrect: false, sortOrder: 2 },
+      { questionId: qw1.id, text: "Anvil stage", isCorrect: false, sortOrder: 3 },
+      { questionId: qw1.id, text: "Mature stage", isCorrect: true, sortOrder: 4 },
     ]})
 
     const qw2 = await prisma.question.create({ data: { unitId: unit5.id, question: "Which type of structural ice is considered most dangerous?", explanation: "Clear (glaze) ice is the most dangerous. It is transparent and difficult to see, forms a heavy dense layer that closely conforms to the airfoil, and is hard to remove. It adds significant weight and degrades lift more severely than rime ice.", farAimRef: "FAA-H-8083-28 Ch.10", difficulty: "medium" } })
@@ -858,16 +860,16 @@ Density altitude is **pressure altitude corrected for non-standard temperature**
 
     const qw3 = await prisma.question.create({ data: { unitId: unit5.id, question: "An aircraft should slow to maneuvering speed (VA) in turbulence because:", explanation: "At or below maneuvering speed, the aircraft will aerodynamically stall before the airframe exceeds its design load limit. Above VA, a single full control deflection or a severe gust could overstress the structure.", farAimRef: "FAA-H-8083-25B Ch.5", difficulty: "medium" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: qw3.id, text: "The aircraft will stall before exceeding structural load limits", isCorrect: true, sortOrder: 1 },
-      { questionId: qw3.id, text: "Lower speed reduces turbulence intensity", isCorrect: false, sortOrder: 2 },
-      { questionId: qw3.id, text: "VA gives the best glide ratio in rough air", isCorrect: false, sortOrder: 3 },
+      { questionId: qw3.id, text: "Lower speed reduces turbulence intensity", isCorrect: false, sortOrder: 1 },
+      { questionId: qw3.id, text: "VA gives the best glide ratio in rough air", isCorrect: false, sortOrder: 2 },
+      { questionId: qw3.id, text: "The aircraft will stall before exceeding structural load limits", isCorrect: true, sortOrder: 3 },
       { questionId: qw3.id, text: "Slower speed improves pilot reaction time", isCorrect: false, sortOrder: 4 },
     ]})
 
     const qw4 = await prisma.question.create({ data: { unitId: unit5.id, question: "High density altitude affects aircraft performance by:", explanation: "High density altitude means thinner air. The engine ingests less oxygen (reducing power), the propeller has less air to accelerate (reducing thrust), and the wings generate less lift — all resulting in degraded takeoff, climb, and cruise performance.", farAimRef: "FAA-H-8083-25B Ch.11", difficulty: "easy" } })
     await prisma.questionOption.createMany({ data: [
-      { questionId: qw4.id, text: "Reducing engine power, propeller thrust, and lift", isCorrect: true, sortOrder: 1 },
-      { questionId: qw4.id, text: "Increasing stall speed and improving climb rate", isCorrect: false, sortOrder: 2 },
+      { questionId: qw4.id, text: "Increasing stall speed and improving climb rate", isCorrect: false, sortOrder: 1 },
+      { questionId: qw4.id, text: "Reducing engine power, propeller thrust, and lift", isCorrect: true, sortOrder: 2 },
       { questionId: qw4.id, text: "Reducing drag and shortening the takeoff roll", isCorrect: false, sortOrder: 3 },
       { questionId: qw4.id, text: "Only affecting turbine engines, not piston aircraft", isCorrect: false, sortOrder: 4 },
     ]})
