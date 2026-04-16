@@ -15,7 +15,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import AIChatButton from "@/components/chat/AIChatButton"
-import ReactMarkdown from "react-markdown"
+import ContentRenderer from "./ContentRenderer"
 
 interface Section {
   id: string
@@ -213,9 +213,7 @@ export default function LessonView({
               <BookOpen className="w-4 h-4 text-sky-500 shrink-0" />
               {section.title}
             </h2>
-            <div className="prose prose-sm prose-slate dark:prose-invert max-w-none">
-              <ReactMarkdown>{section.content}</ReactMarkdown>
-            </div>
+            <ContentRenderer content={section.content} />
           </motion.div>
         ))}
       </div>

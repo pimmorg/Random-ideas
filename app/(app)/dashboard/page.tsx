@@ -132,6 +132,7 @@ export default async function DashboardPage() {
 
   return (
     <DashboardClient
+      trackId={userTrack.track.id}
       trackName={userTrack.track.name}
       trackShortName={userTrack.track.shortName}
       trackIcon={userTrack.track.icon}

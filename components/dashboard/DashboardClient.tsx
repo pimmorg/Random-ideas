@@ -12,6 +12,7 @@ import {
   Circle,
   Award,
   Zap,
+  Trophy,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import AIChatButton from "@/components/chat/AIChatButton"
@@ -39,6 +40,7 @@ interface Unit {
 }
 
 interface DashboardClientProps {
+  trackId: string
   trackName: string
   trackShortName: string
   trackIcon: string
@@ -74,6 +76,7 @@ const masteryBg = {
 }
 
 export default function DashboardClient({
+  trackId,
   trackName,
   trackShortName,
   trackIcon,
@@ -145,6 +148,28 @@ export default function DashboardClient({
           ))}
         </div>
       </div>
+
+      {/* Overall track test CTA */}
+      {overallCompletion > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+        >
+          <Link
+            href={`/quiz/track/${trackId}`}
+            className="flex items-center gap-4 p-4 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl transition-all group"
+          >
+            <Trophy className="w-8 h-8 text-violet-200 shrink-0" />
+            <div className="flex-1">
+              <div className="text-xs text-violet-200 mb-0.5">Mixed questions from all units</div>
+              <div className="font-semibold">Overall Track Test</div>
+              <div className="text-xs text-violet-200 mt-0.5">Test your knowledge across {trackShortName} →</div>
+            </div>
+            <ChevronRight className="w-5 h-5 text-violet-200 group-hover:translate-x-0.5 transition-transform shrink-0" />
+          </Link>
+        </motion.div>
+      )}
 
       {/* Next track preview */}
       {showNextTrackPreview && (
