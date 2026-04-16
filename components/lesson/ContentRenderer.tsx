@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic"
 import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 
 const FourForcesDiagram = dynamic(() => import("./diagrams/FourForcesDiagram"), { ssr: false })
 const AngleOfAttackDiagram = dynamic(() => import("./diagrams/AngleOfAttackDiagram"), { ssr: false })
@@ -116,7 +117,7 @@ function Callout({ variant, content }: { variant: CalloutVariant; content: strin
         {style.label}
       </div>
       <div className={`prose prose-sm dark:prose-invert max-w-none ${style.text}`}>
-        <ReactMarkdown>{content}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
       </div>
     </div>
   )
