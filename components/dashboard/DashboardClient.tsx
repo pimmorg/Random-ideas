@@ -256,54 +256,65 @@ function UnitCard({ unit, unitIndex }: { unit: Unit; unitIndex: number }) {
           : "border-slate-100 dark:border-slate-800"
       )}
     >
-      {/* Unit header — click anywhere to toggle */}
+      {/* Unit header — the whole rectangle is the progress bar */}
       <div
         role="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-3 px-4 py-3.5 cursor-pointer bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors select-none"
+        className="group relative flex items-center gap-3 px-4 py-3.5 cursor-pointer select-none overflow-hidden"
       >
-        {/* Icon + title */}
-        <span className="text-xl shrink-0">{unit.icon ?? "📚"}</span>
-        <div className="flex-1 min-w-0 flex items-center gap-2">
-          <span className="font-bold text-slate-900 dark:text-white text-sm truncate">
-            {unit.title}
-          </span>
-          {mastery !== "none" && (
-            <Award className={cn("w-4 h-4 shrink-0", masteryColors[mastery])} />
-          )}
-        </div>
+        {/* Base background */}
+        <div className="absolute inset-0 bg-slate-50 dark:bg-slate-800/50" />
+        {/* Progress fill — grows left→right */}
+        <div
+          className="absolute inset-y-0 left-0 bg-blue-100 dark:bg-blue-900/30 transition-[width] duration-500 ease-out"
+          style={{ width: `${unit.completionPercent}%` }}
+        />
+        {/* Hover overlay */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-slate-900/5 dark:bg-white/5 transition-opacity" />
 
-        {/* Right side: ring + proficiency + quiz btn + chevron */}
-        <div className="flex items-center gap-3 shrink-0">
-          <LessonRing pct={unit.completionPercent} />
-
-          {unit.quizScore !== null && (
-            <div className="text-right hidden sm:block">
-              <div className="text-sm font-extrabold text-violet-600 dark:text-violet-400 leading-none tabular-nums">
-                {unit.quizScore}%
-              </div>
-              <div className="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5">
-                Proficiency
-              </div>
-            </div>
-          )}
-
-          {unit.questionCount > 0 && unit.completionPercent > 0 && (
-            <Link
-              href={`/quiz/${unit.id}`}
-              onClick={(e) => e.stopPropagation()}
-              className="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900 transition-colors"
-            >
-              Quiz
-            </Link>
-          )}
-
-          <ChevronRight
-            className={cn(
-              "w-4 h-4 text-slate-400 transition-transform duration-200 shrink-0",
-              open && "rotate-90"
+        {/* Content sits above the fill layers */}
+        <div className="relative flex items-center gap-3 w-full">
+          {/* Icon + title */}
+          <span className="text-xl shrink-0">{unit.icon ?? "📚"}</span>
+          <div className="flex-1 min-w-0 flex items-center gap-2">
+            <span className="font-bold text-slate-900 dark:text-white text-sm truncate">
+              {unit.title}
+            </span>
+            {mastery !== "none" && (
+              <Award className={cn("w-4 h-4 shrink-0", masteryColors[mastery])} />
             )}
-          />
+          </div>
+
+          {/* Right: proficiency + quiz btn + chevron */}
+          <div className="flex items-center gap-3 shrink-0">
+            {unit.quizScore !== null && (
+              <div className="text-right hidden sm:block">
+                <div className="text-sm font-extrabold text-violet-600 dark:text-violet-400 leading-none tabular-nums">
+                  {unit.quizScore}%
+                </div>
+                <div className="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5">
+                  Proficiency
+                </div>
+              </div>
+            )}
+
+            {unit.questionCount > 0 && unit.completionPercent > 0 && (
+              <Link
+                href={`/quiz/${unit.id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="text-xs font-medium px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900 transition-colors"
+              >
+                Quiz
+              </Link>
+            )}
+
+            <ChevronRight
+              className={cn(
+                "w-4 h-4 text-slate-400 transition-transform duration-200 shrink-0",
+                open && "rotate-90"
+              )}
+            />
+          </div>
         </div>
       </div>
 
@@ -446,26 +457,6 @@ function ReadinessCard({
       {/* Note */}
       <p className="text-xs text-slate-400 dark:text-slate-500 leading-tight">{note}</p>
     </Link>
-  )
-}
-
-function LessonRing({ pct }: { pct: number }) {
-  const r = 14
-  const circumference = 2 * Math.PI * r
-  const dash = (pct / 100) * circumference
-  return (
-    <svg viewBox="0 0 36 36" className="w-9 h-9 text-slate-200 dark:text-slate-700">
-      {/* Track */}
-      <circle cx="18" cy="18" r={r} fill="none" stroke="currentColor" strokeWidth="4" />
-      {/* Progress arc */}
-      <circle
-        cx="18" cy="18" r={r} fill="none"
-        stroke="#3b82f6" strokeWidth="4" strokeLinecap="round"
-        strokeDasharray={`${dash} ${circumference}`}
-        transform="rotate(-90 18 18)"
-        style={{ transition: "stroke-dasharray 0.5s ease" }}
-      />
-    </svg>
   )
 }
 
