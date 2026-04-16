@@ -103,6 +103,7 @@ export default async function DashboardPage() {
       lessons,
       completionPercent,
       masteryLevel,
+      quizScore: bestAttempt?.score ?? null,
       questionCount: unit.questions.length,
     }
   })

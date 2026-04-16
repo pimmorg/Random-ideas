@@ -15,6 +15,7 @@ import {
   Trophy,
   ClipboardList,
   PlaneTakeoff,
+  Shuffle,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import AIChatButton from "@/components/chat/AIChatButton"
@@ -38,6 +39,7 @@ interface Unit {
   lessons: Lesson[]
   completionPercent: number
   masteryLevel: string
+  quizScore: number | null
   questionCount: number
 }
 
@@ -142,6 +144,26 @@ export default function DashboardClient({
         </motion.div>
       )}
 
+      {/* Daily Quick Quiz */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.08 }}
+      >
+        <Link
+          href="/quiz/daily"
+          className="flex items-center gap-4 p-4 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/30 dark:hover:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-100 rounded-xl transition-colors group"
+        >
+          <Shuffle className="w-8 h-8 text-amber-500 shrink-0" />
+          <div className="flex-1">
+            <div className="text-xs text-amber-600 dark:text-amber-400 mb-0.5">5 random questions</div>
+            <div className="font-semibold">Daily Quick Quiz</div>
+            <div className="text-xs text-amber-600/80 dark:text-amber-400/80 mt-0.5">From your completed lessons →</div>
+          </div>
+          <ChevronRight className="w-5 h-5 text-amber-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
+        </Link>
+      </motion.div>
+
       {/* Skill tree */}
       <div>
         <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-3">
@@ -242,16 +264,35 @@ function UnitCard({ unit, unitIndex }: { unit: Unit; unitIndex: number }) {
               />
             )}
           </div>
-          <div className="flex items-center gap-2 mt-1">
-            <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-blue-500 rounded-full transition-all"
-                style={{ width: `${unit.completionPercent}%` }}
-              />
+          <div className="flex flex-col gap-1 mt-1.5">
+            {/* Lesson completion bar */}
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 w-11 shrink-0">Lessons</span>
+              <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-blue-500 rounded-full transition-all"
+                  style={{ width: `${unit.completionPercent}%` }}
+                />
+              </div>
+              <span className="text-[10px] text-slate-400 shrink-0 w-7 text-right">
+                {unit.completionPercent}%
+              </span>
             </div>
-            <span className="text-xs text-slate-400 shrink-0">
-              {unit.completionPercent}%
-            </span>
+            {/* Quiz competency bar — only if quiz has been attempted */}
+            {unit.quizScore !== null && (
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 w-11 shrink-0">Quiz</span>
+                <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-violet-500 rounded-full transition-all"
+                    style={{ width: `${unit.quizScore}%` }}
+                  />
+                </div>
+                <span className="text-[10px] text-slate-400 shrink-0 w-7 text-right">
+                  {unit.quizScore}%
+                </span>
+              </div>
+            )}
           </div>
         </div>
         {unit.questionCount > 0 && unit.completionPercent > 0 && (
