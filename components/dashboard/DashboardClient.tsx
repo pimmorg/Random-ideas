@@ -394,7 +394,7 @@ function ReadinessCard({
   const dash = (pct / 100) * circumference
 
   return (
-    <div className="p-4 flex flex-col items-center text-center gap-2">
+    <Link href="/progress" className="p-4 flex flex-col items-center text-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
       {/* Ring */}
       <svg viewBox="0 0 100 100" className="w-24 h-24">
         {/* Track */}
@@ -430,7 +430,7 @@ function ReadinessCard({
 
       {/* Note */}
       <p className="text-xs text-slate-400 dark:text-slate-500 leading-tight">{note}</p>
-    </div>
+    </Link>
   )
 }
 
