@@ -875,6 +875,226 @@ Density altitude is **pressure altitude corrected for non-standard temperature**
     ]})
   }
 
+  // Unit 6: Navigation
+  const unit6 = await prisma.unit.upsert({
+    where: { trackId_slug: { trackId: ppl.id, slug: "navigation" } },
+    update: {},
+    create: { trackId: ppl.id, slug: "navigation", title: "Navigation", description: "Sectional charts, VOR navigation, pilotage, and dead reckoning.", icon: "🧭", sortOrder: 6 },
+  })
+
+  const l10 = await prisma.lesson.upsert({
+    where: { unitId_slug: { unitId: unit6.id, slug: "sectional-charts" } },
+    update: {},
+    create: { unitId: unit6.id, slug: "sectional-charts", title: "Sectional Charts", description: "Reading symbols, colors, and airspace depictions on VFR sectionals.", estimatedMins: 14, sortOrder: 1 },
+  })
+
+  await prisma.lessonSection.deleteMany({ where: { lessonId: l10.id } })
+  await prisma.lessonSection.createMany({
+    data: [
+      {
+        lessonId: l10.id,
+        title: "Colors, Lines & Airspace",
+        content: `The VFR sectional chart is the primary navigation tool for visual flight. Every color, line style, and symbol conveys specific information about airspace, terrain, and obstacles.
+
+### Airspace Boundary Lines
+
+| Line Style | Color | Airspace |
+|-----------|-------|----------|
+| **Solid** thick ring | **Blue** | Class B |
+| **Solid** ring with ticks | **Magenta** | Class C |
+| **Dashed** ring | **Blue** | Class D |
+| **Shaded magenta vignette** | **Magenta** | Class E floor at 700 ft AGL |
+| **Shaded blue vignette** | **Blue** | Class E floor at 1,200 ft AGL |
+| **Dashed magenta** | **Magenta** | Class E surface area |
+
+### Altitude Notation
+
+Boundary ceilings and floors appear as numbers near the airspace:
+- **\`100 / SFC\`** — ceiling 10,000 MSL, floor at surface
+- **\`100 / 30\`** — ceiling 10,000 MSL, floor 3,000 MSL
+- **\`[35]\`** (boxed) — bracketed number means Class D ceiling in hundreds of feet MSL
+
+:::tip
+**Magenta = C, E(700)**. **Blue = B, D, E(1,200)**. The subtle difference between the blue and magenta vignette shading tells you exactly where Class E begins — critical for VFR weather minimums.
+:::
+
+:::warning
+A **dashed magenta line** means Class E airspace extends **down to the surface** (usually at an airport with instrument approaches but no control tower). This is not the same as the magenta vignette, which means Class E begins at 700 AGL.
+:::`,
+        sortOrder: 1,
+      },
+      {
+        lessonId: l10.id,
+        title: "Airports, Frequencies & Obstacles",
+        content: `### Airport Symbols
+
+| Symbol | Meaning |
+|--------|---------|
+| **Blue** airport symbol | Has a control tower |
+| **Magenta** airport symbol | No control tower (uncontrolled) |
+| **Star** on airport | Has rotating beacon (lighted, operates sunset to sunrise) |
+| **R** in circle | Private field — permission required |
+| **Runway pattern** drawn | Hard-surface runway ≥ 1,500 ft long |
+
+### Airport Data Block
+
+Next to each airport is a data block. Example:
+
+\`\`\`
+KMYF      CT 123.3  ★
+MONTGOMERY-GIBBS EXECUTIVE
+427  L  60  123.075
+\`\`\`
+
+- **KMYF** — airport identifier
+- **CT 123.3** — Control Tower frequency 123.3 MHz (blue = towered)
+- **★** — has a rotating beacon
+- **427** — field elevation in feet MSL
+- **L** — lighting available
+- **60** — longest runway length in hundreds of feet (60 = 6,000 ft)
+- **123.075** — CTAF/UNICOM or ATIS frequency
+
+### Obstacles
+
+Towers and tall structures are marked with an inverted triangle symbol (▽). Two numbers appear beside each:
+
+- **Top number** (bold) = obstacle top elevation in feet **MSL**
+- **Bottom number** (in parentheses) = obstacle height **AGL**
+
+:::warning
+Any obstruction **1,000 ft AGL or higher** is drawn as a larger symbol with lightning bolts, indicating **high-intensity obstruction lighting**. Always verify terrain and obstacle clearance before flight — chart symbols do NOT include newly-erected towers.
+:::
+
+:::tip
+**Maximum Elevation Figure (MEF)** — the bold number in each 30-minute latitude/longitude quadrangle represents the highest terrain or obstacle (with a 100–300 ft buffer). When flying, stay at least 500 ft above the MEF for that quadrangle.
+:::`,
+        sortOrder: 2,
+      },
+    ],
+  })
+
+  const l11 = await prisma.lesson.upsert({
+    where: { unitId_slug: { unitId: unit6.id, slug: "vor-navigation" } },
+    update: {},
+    create: { unitId: unit6.id, slug: "vor-navigation", title: "VOR Navigation", description: "How VOR works, OBS use, and intercepting radials.", estimatedMins: 12, sortOrder: 2 },
+  })
+
+  await prisma.lessonSection.deleteMany({ where: { lessonId: l11.id } })
+  await prisma.lessonSection.createMany({
+    data: [
+      {
+        lessonId: l11.id,
+        title: "How VOR Works",
+        content: `**VOR (VHF Omnidirectional Range)** is the backbone of ground-based navigation in the United States. A VOR station broadcasts 360 distinct signals — one per degree — called **radials**.
+
+### Key Principle: Radials Go FROM the Station
+
+A "radial" is the magnetic bearing **from** the VOR outward in a straight line. If you are on the **090 radial**, you are due east of the station — regardless of which direction your aircraft is pointed.
+
+### The Cockpit Indicator
+
+The VOR indicator in the cockpit has three parts:
+
+1. **OBS (Omnibearing Selector)** — a rotating knob that selects which radial to reference
+2. **CDI (Course Deviation Indicator)** — a vertical needle that shows how far you are left or right of the selected radial
+3. **TO/FROM flag** — indicates whether flying the selected course will take you TO the station or FROM it
+
+### Centering the Needle
+
+Rotate the OBS until the CDI centers:
+- If the **TO** flag appears → that bearing will take you **toward** the station
+- If the **FROM** flag appears → that bearing is the radial you are on (pointing away from the station)
+
+:::info
+VOR is independent of aircraft heading. Turning the aircraft does not move the CDI needle — only moving through space does. This is fundamentally different from a heading indicator.
+:::
+
+:::tip
+**To fly directly to a VOR:** rotate the OBS until the needle centers with a **TO** flag. Then turn the aircraft to match the OBS setting. The needle stays centered as long as you track that course.
+:::`,
+        sortOrder: 1,
+      },
+      {
+        lessonId: l11.id,
+        title: "Intercepting & Tracking a Radial",
+        content: `### Intercepting a Radial
+
+To intercept and track a specific course (e.g., the 090 radial outbound):
+
+1. **Set the OBS** to the desired course (090)
+2. **Turn to the intercept heading** — typically 30–45° toward the needle
+3. As the needle centers, **turn to the course** (090) and track it
+4. Apply **wind correction** as needed to keep the needle centered
+
+### The "Point-to-Point" Rule
+
+The CDI needle always points toward the selected course line:
+- Needle **right** → course is to your right → turn right to intercept
+- Needle **left** → course is to your left → turn left to intercept
+
+:::warning
+**Reverse sensing** occurs when the OBS is set to the reciprocal of your course. If you're flying east (090°) but the OBS is set to 270°, the needle will show a RIGHT deflection when the course is actually to your LEFT. Always set the OBS to roughly match your heading — with a TO or FROM flag consistent with your direction of flight.
+:::
+
+### Service Volumes
+
+VOR coverage depends on altitude and distance. Standard Service Volumes:
+
+| Class | Altitude | Range |
+|-------|----------|-------|
+| **Terminal (T)** | 1,000–12,000 ft AGL | 25 NM |
+| **Low (L)** | 1,000–18,000 ft AGL | 40 NM |
+| **High (H)** | Up to FL450 | 100–130 NM (altitude-dependent) |
+
+:::tip
+VOR signals are **line-of-sight** — terrain and aircraft altitude both affect reception. At low altitudes in mountainous terrain, you may lose signal long before the published range. Always cross-check with a second source (GPS, pilotage).
+:::
+
+:::info
+**Pilotage** (visual ground references) and **dead reckoning** (computed headings based on TAS, wind, and time) remain required PPL skills. Even with GPS, the ability to navigate by chart and clock is tested on every checkride.
+:::`,
+        sortOrder: 2,
+      },
+    ],
+  })
+
+  // Quiz questions for unit6
+  await prisma.questionOption.deleteMany({ where: { question: { unitId: unit6.id } } })
+  await prisma.question.deleteMany({ where: { unitId: unit6.id } })
+  {
+    const qn1 = await prisma.question.create({ data: { unitId: unit6.id, question: "On a sectional chart, a shaded magenta vignette around an airport indicates that Class E airspace begins at:", explanation: "A shaded magenta vignette on a sectional indicates a Class E transition area with a floor of 700 ft AGL. This lower floor protects IFR aircraft on instrument approaches. Away from these areas, Class E typically begins at 1,200 AGL (shaded blue).", farAimRef: "FAA-H-8083-25B Ch.15", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: qn1.id, text: "1,200 ft AGL", isCorrect: false, sortOrder: 1 },
+      { questionId: qn1.id, text: "The surface", isCorrect: false, sortOrder: 2 },
+      { questionId: qn1.id, text: "700 ft AGL", isCorrect: true, sortOrder: 3 },
+      { questionId: qn1.id, text: "14,500 ft MSL", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const qn2 = await prisma.question.create({ data: { unitId: unit6.id, question: "A blue airport symbol on a sectional chart indicates the airport:", explanation: "Blue airport symbols indicate airports with a control tower (towered airports). Magenta symbols indicate non-towered airports. The color distinction is the fastest way to identify whether you must contact a tower for arrival.", farAimRef: "FAA-H-8083-25B Ch.15", difficulty: "easy" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: qn2.id, text: "Has a control tower", isCorrect: true, sortOrder: 1 },
+      { questionId: qn2.id, text: "Is private and requires prior permission", isCorrect: false, sortOrder: 2 },
+      { questionId: qn2.id, text: "Has no runway lighting", isCorrect: false, sortOrder: 3 },
+      { questionId: qn2.id, text: "Is closed or abandoned", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const qn3 = await prisma.question.create({ data: { unitId: unit6.id, question: "You are flying east and want to track directly TO a VOR station. You rotate the OBS until the CDI centers. Which flag should appear?", explanation: "Flying directly toward a station requires a TO indication. The OBS setting will equal the magnetic course to the station. If a FROM flag appears with the needle centered, you have selected the reciprocal radial and would experience reverse sensing.", farAimRef: "FAA-H-8083-25B Ch.16", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: qn3.id, text: "FROM", isCorrect: false, sortOrder: 1 },
+      { questionId: qn3.id, text: "OFF or NAV flag", isCorrect: false, sortOrder: 2 },
+      { questionId: qn3.id, text: "Either TO or FROM is acceptable", isCorrect: false, sortOrder: 3 },
+      { questionId: qn3.id, text: "TO", isCorrect: true, sortOrder: 4 },
+    ]})
+
+    const qn4 = await prisma.question.create({ data: { unitId: unit6.id, question: "A VOR classed as 'Low' (L) is guaranteed usable within what range at 3,000 ft AGL?", explanation: "A Low (L) class VOR is usable within 40 NM at altitudes between 1,000 and 18,000 ft AGL. Terminal (T) VORs are 25 NM, and High (H) VORs extend to 100+ NM at higher altitudes. These are guaranteed service volumes — actual reception may extend farther in favorable conditions.", farAimRef: "FAA-H-8083-25B Ch.16", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: qn4.id, text: "25 NM", isCorrect: false, sortOrder: 1 },
+      { questionId: qn4.id, text: "40 NM", isCorrect: true, sortOrder: 2 },
+      { questionId: qn4.id, text: "100 NM", isCorrect: false, sortOrder: 3 },
+      { questionId: qn4.id, text: "130 NM", isCorrect: false, sortOrder: 4 },
+    ]})
+  }
+
   // Achievements
   const achievements = [
     { slug: "first-lesson", name: "First Flight", description: "Complete your first lesson.", icon: "🎯", xpReward: 50, category: "milestones" },
