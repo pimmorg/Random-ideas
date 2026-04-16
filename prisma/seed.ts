@@ -475,6 +475,117 @@ The most common error is losing altitude in the first 90° of the turn. As soon 
     ]})
   }
 
+  // Lesson 7: Ground Reference Maneuvers (ACS V-B)
+  const l7 = await prisma.lesson.upsert({
+    where: { unitId_slug: { unitId: unit3.id, slug: "ground-reference-maneuvers" } },
+    update: {},
+    create: { unitId: unit3.id, slug: "ground-reference-maneuvers", title: "Ground Reference Maneuvers", description: "ACS V-B: Turns around a point, S-turns, rectangular course.", estimatedMins: 14, sortOrder: 2 },
+  })
+
+  await prisma.lessonSection.deleteMany({ where: { lessonId: l7.id } })
+  await prisma.lessonSection.createMany({
+    data: [
+      {
+        lessonId: l7.id,
+        title: "Turns Around a Point",
+        content: `**Turns around a point** is the foundational ground reference maneuver. The pilot flies a constant-radius circle around a fixed ground reference point while maintaining a constant altitude.
+
+The challenge: **wind**. Without wind, a constant bank angle produces a constant-radius circle. With wind, groundspeed continuously changes around the orbit. Since turn radius depends on groundspeed (faster = wider turn), the pilot must continuously vary bank angle to compensate:
+
+- **Upwind side** (heading into wind) — lower groundspeed → **shallower bank**
+- **Downwind side** (heading with wind) — higher groundspeed → **steeper bank**
+
+The relationship is: tan(bank) ∝ groundspeed². Even a modest 15-knot wind produces a significant bank angle variation around the orbit.
+
+[DIAGRAM:turns-around-point]
+
+:::info
+**ACS Standard (V-B):** Select a suitable ground reference point, enter at 600–1,000 ft AGL, maintain altitude ±100 ft, airspeed ±10 knots, bank ±5° of entry bank.
+:::
+
+:::tip
+Pick a distinct, isolated ground reference point you can keep in sight throughout — an intersection, a tank, or a lone tree. Brief yourself on the wind direction before entry so you know which side needs more bank.
+:::`,
+        sortOrder: 1,
+      },
+      {
+        lessonId: l7.id,
+        title: "S-Turns & Rectangular Course",
+        content: `### S-Turns Across a Road
+
+The pilot flies a series of equal-radius semicircles on alternating sides of a straight ground reference line (typically a road or fence line). The entry is perpendicular to the line, wings level, then the pilot immediately begins a turn.
+
+**Bank angle logic** — same principle as turns around a point:
+- When the semicircle is on the **downwind side**, enter with a **steep bank** and gradually shallow as the turn progresses (groundspeed decreasing as you turn upwind)
+- When the semicircle is on the **upwind side**, enter with a **shallow bank** and steepen toward the line (groundspeed increasing)
+
+:::tip
+A good way to set up: identify the wind direction, cross the road at 90°, and immediately establish your steepest bank on the downwind semicircle. If the arcs are unequal, reassess your entry bank.
+:::
+
+---
+
+### Rectangular Course
+
+The rectangular course simulates the airport traffic pattern. The pilot flies a rectangle around a field or section of land, maintaining a constant distance from each side.
+
+| Leg | Wind Effect | Bank Correction |
+|-----|------------|----------------|
+| **Downwind** | Tailwind — drift away from field | Crab toward field |
+| **Base** | Crosswind | Steeper bank on base-to-final (tailwind) |
+| **Upwind** | Headwind — drift toward field | Crab away from field |
+| **Crosswind** | Crosswind | Shallower bank on upwind turn |
+
+:::warning
+The rectangular course teaches the same skills as the traffic pattern. The base-to-final turn is where stall/spin accidents occur — do not let the aircraft drift inside the intended ground track and then pull back to compensate. Recognize the tendency early.
+:::
+
+:::info
+All three ground reference maneuvers (turns around a point, S-turns, rectangular course) share the same underlying principle: **ground track control through continuous bank variation**. Master one and the others follow naturally.
+:::`,
+        sortOrder: 2,
+      },
+    ],
+  })
+
+  // Quiz questions for ground reference maneuvers (add to unit3)
+  const existingGRM = await prisma.question.count({
+    where: { unitId: unit3.id, question: { contains: "turns around a point" } },
+  })
+  if (existingGRM === 0) {
+    const q14 = await prisma.question.create({ data: { unitId: unit3.id, question: "During turns around a point, why must the pilot use a steeper bank on the downwind side?", explanation: "On the downwind side of the orbit, the aircraft has a tailwind, increasing groundspeed. A higher groundspeed produces a wider turn radius at a given bank angle. To maintain the same radius, the pilot must increase bank angle on the downwind side.", farAimRef: "FAA-H-8083-3C Ch.6", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: q14.id, text: "Higher groundspeed requires more bank to maintain the radius", isCorrect: true, sortOrder: 1 },
+      { questionId: q14.id, text: "The aircraft tends to pitch down in a tailwind", isCorrect: false, sortOrder: 2 },
+      { questionId: q14.id, text: "Lift decreases in tailwind conditions", isCorrect: false, sortOrder: 3 },
+      { questionId: q14.id, text: "ATC requires steeper banks when flying downwind", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const q15 = await prisma.question.create({ data: { unitId: unit3.id, question: "During S-turns across a road, where should the steepest bank occur?", explanation: "The steepest bank occurs immediately after crossing the road heading downwind. At that point groundspeed is highest (tailwind), so the most bank is required. As the aircraft turns into the wind, groundspeed decreases and bank is progressively reduced.", farAimRef: "FAA-H-8083-3C Ch.6", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: q15.id, text: "Immediately after crossing the road on the downwind side", isCorrect: true, sortOrder: 1 },
+      { questionId: q15.id, text: "At the midpoint of each semicircle", isCorrect: false, sortOrder: 2 },
+      { questionId: q15.id, text: "Immediately after crossing the road on the upwind side", isCorrect: false, sortOrder: 3 },
+      { questionId: q15.id, text: "At the same point on both sides of the road", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const q16 = await prisma.question.create({ data: { unitId: unit3.id, question: "The rectangular course is most useful for teaching which practical skill?", explanation: "The rectangular course directly simulates the airport traffic pattern — flying legs at constant distance from a ground reference while compensating for wind with crab angles. It trains the judgment needed for every pattern at every airport.", farAimRef: "FAA-H-8083-3C Ch.6", difficulty: "easy" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: q16.id, text: "Traffic pattern procedures and wind correction", isCorrect: true, sortOrder: 1 },
+      { questionId: q16.id, text: "Stall recovery at low altitude", isCorrect: false, sortOrder: 2 },
+      { questionId: q16.id, text: "Instrument scan techniques", isCorrect: false, sortOrder: 3 },
+      { questionId: q16.id, text: "Engine failure procedures", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const q17 = await prisma.question.create({ data: { unitId: unit3.id, question: "What altitude is typically used for ground reference maneuvers?", explanation: "Ground reference maneuvers are conducted at 600–1,000 ft AGL — low enough to clearly reference the ground for track control, but high enough to allow recovery from errors. The ACS specifies this range.", farAimRef: "FAA-S-ACS-6B V.B", difficulty: "easy" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: q17.id, text: "600–1,000 ft AGL", isCorrect: true, sortOrder: 1 },
+      { questionId: q17.id, text: "1,500–2,000 ft AGL", isCorrect: false, sortOrder: 2 },
+      { questionId: q17.id, text: "300–500 ft AGL", isCorrect: false, sortOrder: 3 },
+      { questionId: q17.id, text: "2,500 ft MSL", isCorrect: false, sortOrder: 4 },
+    ]})
+  }
+
   // Achievements
   const achievements = [
     { slug: "first-lesson", name: "First Flight", description: "Complete your first lesson.", icon: "🎯", xpReward: 50, category: "milestones" },
