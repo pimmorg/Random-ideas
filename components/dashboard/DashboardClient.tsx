@@ -166,9 +166,13 @@ export default function DashboardClient({
 
       {/* Skill tree */}
       <div>
-        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-3">
-          Skill Tree
-        </h2>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-0.5 h-5 bg-blue-500 rounded-full" />
+          <h2 className="text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest">
+            Skill Tree
+          </h2>
+          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+        </div>
         <div className="space-y-4">
           {units.map((unit, unitIndex) => (
             <UnitCard key={unit.id} unit={unit} unitIndex={unitIndex} />
@@ -251,58 +255,54 @@ function UnitCard({ unit, unitIndex }: { unit: Unit; unitIndex: number }) {
       )}
     >
       {/* Unit header */}
-      <div className="flex items-center gap-3 p-4 border-b border-slate-100 dark:border-slate-800">
-        <span className="text-xl">{unit.icon ?? "📚"}</span>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-900 dark:text-white text-sm truncate">
+      <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+        {/* Title row */}
+        <div className="flex items-center gap-2.5 mb-3">
+          <span className="text-xl">{unit.icon ?? "📚"}</span>
+          <div className="flex-1 min-w-0 flex items-center gap-2">
+            <span className="font-bold text-slate-900 dark:text-white text-sm truncate">
               {unit.title}
             </span>
             {mastery !== "none" && (
-              <Award
-                className={cn("w-4 h-4 shrink-0", masteryColors[mastery])}
-              />
+              <Award className={cn("w-4 h-4 shrink-0", masteryColors[mastery])} />
             )}
           </div>
-          <div className="flex flex-col gap-1 mt-1.5">
-            {/* Lesson completion bar */}
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-slate-400 dark:text-slate-500 w-11 shrink-0">Lessons</span>
-              <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-blue-500 rounded-full transition-all"
-                  style={{ width: `${unit.completionPercent}%` }}
-                />
-              </div>
-              <span className="text-[10px] text-slate-400 shrink-0 w-7 text-right">
-                {unit.completionPercent}%
-              </span>
-            </div>
-            {/* Quiz competency bar — only if quiz has been attempted */}
-            {unit.quizScore !== null && (
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] text-slate-400 dark:text-slate-500 w-11 shrink-0">Quiz</span>
-                <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-violet-500 rounded-full transition-all"
-                    style={{ width: `${unit.quizScore}%` }}
-                  />
-                </div>
-                <span className="text-[10px] text-slate-400 shrink-0 w-7 text-right">
-                  {unit.quizScore}%
-                </span>
-              </div>
-            )}
-          </div>
+          {unit.questionCount > 0 && unit.completionPercent > 0 && (
+            <Link
+              href={`/quiz/${unit.id}`}
+              className="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900 transition-colors"
+            >
+              Quiz
+            </Link>
+          )}
         </div>
-        {unit.questionCount > 0 && unit.completionPercent > 0 && (
-          <Link
-            href={`/quiz/${unit.id}`}
-            className="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900 transition-colors"
-          >
-            Quiz
-          </Link>
-        )}
+
+        {/* Stats row */}
+        <div className="flex items-center gap-4">
+          {/* Lesson circle progress */}
+          <div className="flex items-center gap-2.5">
+            <LessonRing pct={unit.completionPercent} />
+            <div>
+              <div className="text-xs font-semibold text-slate-700 dark:text-slate-300">Lessons</div>
+              <div className="text-xs text-slate-400 dark:text-slate-500">{unit.completionPercent}% complete</div>
+            </div>
+          </div>
+
+          {/* Proficiency — only after first quiz attempt */}
+          {unit.quizScore !== null && (
+            <>
+              <div className="w-px h-8 bg-slate-200 dark:bg-slate-700" />
+              <div>
+                <div className="text-lg font-extrabold text-violet-600 dark:text-violet-400 leading-none tabular-nums">
+                  {unit.quizScore}%
+                </div>
+                <div className="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">
+                  Proficiency
+                </div>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Lessons */}
@@ -431,6 +431,26 @@ function ReadinessCard({
       {/* Note */}
       <p className="text-xs text-slate-400 dark:text-slate-500 leading-tight">{note}</p>
     </div>
+  )
+}
+
+function LessonRing({ pct }: { pct: number }) {
+  const r = 14
+  const circumference = 2 * Math.PI * r
+  const dash = (pct / 100) * circumference
+  return (
+    <svg viewBox="0 0 36 36" className="w-9 h-9 text-slate-200 dark:text-slate-700">
+      {/* Track */}
+      <circle cx="18" cy="18" r={r} fill="none" stroke="currentColor" strokeWidth="4" />
+      {/* Progress arc */}
+      <circle
+        cx="18" cy="18" r={r} fill="none"
+        stroke="#3b82f6" strokeWidth="4" strokeLinecap="round"
+        strokeDasharray={`${dash} ${circumference}`}
+        transform="rotate(-90 18 18)"
+        style={{ transition: "stroke-dasharray 0.5s ease" }}
+      />
+    </svg>
   )
 }
 
