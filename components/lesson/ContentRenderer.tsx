@@ -86,11 +86,11 @@ const calloutStyles: Record<
   { bg: string; border: string; icon: string; label: string; text: string }
 > = {
   info: {
-    bg: "bg-sky-50 dark:bg-sky-950/60",
-    border: "border-sky-200 dark:border-sky-800",
+    bg: "bg-blue-50 dark:bg-blue-950/60",
+    border: "border-blue-200 dark:border-blue-800",
     icon: "ℹ️",
     label: "Note",
-    text: "text-sky-900 dark:text-sky-100",
+    text: "text-blue-900 dark:text-blue-100",
   },
   tip: {
     bg: "bg-emerald-50 dark:bg-emerald-950/60",

@@ -68,7 +68,7 @@ export default function ProgressClient({
       {/* Overview stats */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
-          { icon: <Zap className="w-4 h-4 text-sky-500" />, value: totalXp, label: "Total XP" },
+          { icon: <Zap className="w-4 h-4 text-blue-500" />, value: totalXp, label: "Total XP" },
           { icon: <CheckCircle2 className="w-4 h-4 text-emerald-500" />, value: lessonsCompleted, label: "Lessons Done" },
           { icon: <Target className="w-4 h-4 text-purple-500" />, value: `${avgAccuracy}%`, label: "Avg Accuracy" },
           { icon: <TrendingUp className="w-4 h-4 text-orange-500" />, value: `${overallReadiness}%`, label: "Readiness" },
@@ -184,7 +184,7 @@ export default function ProgressClient({
               </div>
               <div className="mt-2 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-sky-500 rounded-full"
+                  className="h-full bg-blue-500 rounded-full"
                   style={{
                     width: `${unit.totalLessons > 0 ? (unit.completedLessons / unit.totalLessons) * 100 : 0}%`,
                   }}
@@ -230,10 +230,10 @@ export default function ProgressClient({
                   "w-4 h-4 rounded-sm",
                   entry && entry.xp > 0
                     ? entry.xp >= 50
-                      ? "bg-sky-600"
+                      ? "bg-blue-600"
                       : entry.xp >= 20
-                      ? "bg-sky-400"
-                      : "bg-sky-200"
+                      ? "bg-blue-400"
+                      : "bg-blue-200"
                     : "bg-slate-100 dark:bg-slate-800"
                 )}
                 title={`${dateStr}: ${entry?.xp ?? 0} XP`}
@@ -244,11 +244,11 @@ export default function ProgressClient({
         <div className="flex items-center gap-2 mt-2 text-xs text-slate-400">
           <div className="w-3 h-3 rounded-sm bg-slate-100 dark:bg-slate-800" />
           <span>No study</span>
-          <div className="w-3 h-3 rounded-sm bg-sky-200 ml-2" />
+          <div className="w-3 h-3 rounded-sm bg-blue-200 ml-2" />
           <span>Light</span>
-          <div className="w-3 h-3 rounded-sm bg-sky-400 ml-2" />
+          <div className="w-3 h-3 rounded-sm bg-blue-400 ml-2" />
           <span>Good</span>
-          <div className="w-3 h-3 rounded-sm bg-sky-600 ml-2" />
+          <div className="w-3 h-3 rounded-sm bg-blue-600 ml-2" />
           <span>Heavy</span>
         </div>
       </div>

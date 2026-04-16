@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col font-sans bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50">
+      <body className="min-h-full flex flex-col font-sans bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-50">
         <SessionProvider>{children}</SessionProvider>
       </body>
     </html>

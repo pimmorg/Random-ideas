@@ -24,16 +24,16 @@ export default function AuthLayout({
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="w-10 h-10 text-sky-500 group-hover:text-sky-400 transition-colors"
+            className="w-10 h-10 text-blue-500 group-hover:text-blue-400 transition-colors"
             aria-hidden="true"
           >
             <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
           </svg>
-          <span className="text-3xl font-bold tracking-tight text-white group-hover:text-sky-100 transition-colors">
+          <span className="text-3xl font-bold tracking-tight text-white group-hover:text-blue-100 transition-colors">
             SkySchool
           </span>
         </Link>
-        <p className="text-sm text-sky-400/80 tracking-wide uppercase font-medium">
+        <p className="text-sm text-blue-400/80 tracking-wide uppercase font-medium">
           Student Pilot Study Platform
         </p>
       </div>

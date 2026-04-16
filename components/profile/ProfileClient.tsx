@@ -70,7 +70,7 @@ export default function ProfileClient({
       {/* User info */}
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 p-5">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-sky-100 dark:bg-sky-900 flex items-center justify-center text-sky-700 dark:text-sky-300 text-xl font-bold">
+          <div className="w-14 h-14 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-700 dark:text-blue-300 text-xl font-bold">
             {user.name?.[0]?.toUpperCase() ?? user.email?.[0]?.toUpperCase() ?? "?"}
           </div>
           <div>
@@ -100,7 +100,7 @@ export default function ProfileClient({
               className={cn(
                 "py-2 rounded-lg text-sm font-medium transition-colors",
                 goal === mins
-                  ? "bg-sky-600 text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
               )}
             >
@@ -133,7 +133,7 @@ export default function ProfileClient({
                 </span>
               </div>
               {track.isActive ? (
-                <span className="text-xs bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-300 px-2 py-0.5 rounded-full font-medium">
+                <span className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 px-2 py-0.5 rounded-full font-medium">
                   Active
                 </span>
               ) : track.isUnlocked ? (
@@ -141,7 +141,7 @@ export default function ProfileClient({
               ) : (
                 <button
                   onClick={() => unlockTrack(track.id)}
-                  className="flex items-center gap-1 text-xs text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 font-medium"
+                  className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
                 >
                   <Plus className="w-3 h-3" />
                   Add

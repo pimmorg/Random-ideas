@@ -191,7 +191,7 @@ export default function RegisterPage() {
               id="name"
               type="text"
               autoComplete="name"
-              className="border-slate-600 bg-slate-700/50 text-white placeholder:text-slate-400 focus-visible:ring-sky-500"
+              className="border-slate-600 bg-slate-700/50 text-white placeholder:text-slate-400 focus-visible:ring-blue-500"
               {...register("name")}
             />
             {errors.name && (
@@ -207,7 +207,7 @@ export default function RegisterPage() {
               id="email"
               type="email"
               autoComplete="email"
-              className="border-slate-600 bg-slate-700/50 text-white placeholder:text-slate-400 focus-visible:ring-sky-500"
+              className="border-slate-600 bg-slate-700/50 text-white placeholder:text-slate-400 focus-visible:ring-blue-500"
               {...register("email")}
             />
             {errors.email && (
@@ -223,7 +223,7 @@ export default function RegisterPage() {
               id="password"
               type="password"
               autoComplete="new-password"
-              className="border-slate-600 bg-slate-700/50 text-white placeholder:text-slate-400 focus-visible:ring-sky-500"
+              className="border-slate-600 bg-slate-700/50 text-white placeholder:text-slate-400 focus-visible:ring-blue-500"
               {...register("password")}
             />
             {errors.password && (
@@ -243,7 +243,7 @@ export default function RegisterPage() {
           <Button
             type="submit"
             disabled={isSubmitting || isGoogleLoading}
-            className="w-full bg-sky-500 font-semibold text-white hover:bg-sky-400 disabled:opacity-50"
+            className="w-full bg-blue-500 font-semibold text-white hover:bg-blue-400 disabled:opacity-50"
           >
             {isSubmitting ? (
               <span className="flex items-center gap-2">
@@ -281,7 +281,7 @@ export default function RegisterPage() {
           Already have an account?{" "}
           <Link
             href="/login"
-            className="font-medium text-sky-400 transition-colors hover:text-sky-300 hover:underline"
+            className="font-medium text-blue-400 transition-colors hover:text-blue-300 hover:underline"
           >
             Sign in
           </Link>

@@ -66,7 +66,7 @@ export default function JourneyClient({ tracks, activeTrackId }: JourneyClientPr
                   className={cn(
                     "relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shrink-0 border-2 transition-all",
                     isActive
-                      ? "border-sky-500 bg-sky-50 dark:bg-sky-950 shadow-sm shadow-sky-200 dark:shadow-sky-900"
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-950 shadow-sm shadow-blue-200 dark:shadow-blue-900"
                       : isCompleted
                       ? "border-emerald-400 bg-emerald-50 dark:bg-emerald-950"
                       : track.isUnlocked
@@ -88,7 +88,7 @@ export default function JourneyClient({ tracks, activeTrackId }: JourneyClientPr
                     </div>
                   )}
                   {isActive && (
-                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-sky-500 rounded-full flex items-center justify-center">
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
                       <Plane className="w-3 h-3 text-white" />
                     </div>
                   )}
@@ -101,7 +101,7 @@ export default function JourneyClient({ tracks, activeTrackId }: JourneyClientPr
                       className={cn(
                         "font-semibold",
                         isActive
-                          ? "text-sky-700 dark:text-sky-300"
+                          ? "text-blue-700 dark:text-blue-300"
                           : track.isUnlocked
                           ? "text-slate-900 dark:text-white"
                           : "text-slate-400 dark:text-slate-600"
@@ -110,7 +110,7 @@ export default function JourneyClient({ tracks, activeTrackId }: JourneyClientPr
                       {track.name}
                     </h3>
                     {isActive && (
-                      <span className="text-xs bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-300 px-2 py-0.5 rounded-full font-medium">
+                      <span className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 px-2 py-0.5 rounded-full font-medium">
                         Active
                       </span>
                     )}
@@ -134,7 +134,7 @@ export default function JourneyClient({ tracks, activeTrackId }: JourneyClientPr
                     <div className="mt-2 flex items-center gap-2">
                       <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full max-w-[120px]">
                         <div
-                          className="h-full bg-sky-400 rounded-full"
+                          className="h-full bg-blue-400 rounded-full"
                           style={{ width: `${track.completionPercent}%` }}
                         />
                       </div>

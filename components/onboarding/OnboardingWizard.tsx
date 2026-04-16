@@ -159,8 +159,8 @@ export default function OnboardingWizard({
       {/* Header */}
       <div className="mb-8 text-center">
         <div className="flex items-center justify-center gap-2 mb-2">
-          <Plane className="w-6 h-6 text-sky-600" />
-          <span className="text-xl font-bold text-sky-600">SkySchool</span>
+          <Plane className="w-6 h-6 text-blue-600" />
+          <span className="text-xl font-bold text-blue-600">SkySchool</span>
         </div>
         {step === 0 && (
           <p className="text-slate-500 dark:text-slate-400 text-sm">
@@ -176,7 +176,7 @@ export default function OnboardingWizard({
             key={i}
             className={cn(
               "h-1.5 rounded-full transition-all",
-              i < step ? "w-6 bg-sky-500" : i === step ? "w-6 bg-sky-500" : "w-4 bg-slate-200 dark:bg-slate-700"
+              i < step ? "w-6 bg-blue-500" : i === step ? "w-6 bg-blue-500" : "w-4 bg-slate-200 dark:bg-slate-700"
             )}
           />
         ))}
@@ -206,8 +206,8 @@ export default function OnboardingWizard({
                   className={cn(
                     "flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-all",
                     trainingStage === stage.value
-                      ? "border-sky-500 bg-sky-50 dark:bg-sky-950"
-                      : "border-slate-200 dark:border-slate-700 hover:border-sky-300 hover:bg-sky-50/50 dark:hover:bg-sky-950/30"
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
+                      : "border-slate-200 dark:border-slate-700 hover:border-blue-300 hover:bg-blue-50/50 dark:hover:bg-blue-950/30"
                   )}
                 >
                   <span className="text-2xl">{stage.emoji}</span>
@@ -220,7 +220,7 @@ export default function OnboardingWizard({
                     </div>
                   </div>
                   {trainingStage === stage.value && (
-                    <CheckCircle className="w-4 h-4 text-sky-500 ml-auto shrink-0 mt-0.5" />
+                    <CheckCircle className="w-4 h-4 text-blue-500 ml-auto shrink-0 mt-0.5" />
                   )}
                 </button>
               ))}
@@ -229,7 +229,7 @@ export default function OnboardingWizard({
               <button
                 onClick={() => setStep(hasFollowUp ? 1 : 2)}
                 disabled={!trainingStage}
-                className="px-6 py-2.5 bg-sky-600 text-white font-medium rounded-lg hover:bg-sky-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 Continue
               </button>
@@ -262,15 +262,15 @@ export default function OnboardingWizard({
                   className={cn(
                     "flex items-center justify-between p-4 rounded-xl border-2 text-left transition-all",
                     followUpAnswer === opt.value
-                      ? "border-sky-500 bg-sky-50 dark:bg-sky-950"
-                      : "border-slate-200 dark:border-slate-700 hover:border-sky-300"
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
+                      : "border-slate-200 dark:border-slate-700 hover:border-blue-300"
                   )}
                 >
                   <span className="text-sm font-medium text-slate-900 dark:text-white">
                     {opt.label}
                   </span>
                   {followUpAnswer === opt.value && (
-                    <CheckCircle className="w-4 h-4 text-sky-500" />
+                    <CheckCircle className="w-4 h-4 text-blue-500" />
                   )}
                 </button>
               ))}
@@ -285,7 +285,7 @@ export default function OnboardingWizard({
               <button
                 onClick={() => setStep(2)}
                 disabled={!followUpAnswer}
-                className="px-6 py-2.5 bg-sky-600 text-white font-medium rounded-lg hover:bg-sky-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 Continue
               </button>
@@ -316,11 +316,11 @@ export default function OnboardingWizard({
                   className={cn(
                     "p-5 rounded-xl border-2 text-center transition-all",
                     dailyGoal === goal.minutes
-                      ? "border-sky-500 bg-sky-50 dark:bg-sky-950"
-                      : "border-slate-200 dark:border-slate-700 hover:border-sky-300"
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
+                      : "border-slate-200 dark:border-slate-700 hover:border-blue-300"
                   )}
                 >
-                  <div className="text-2xl font-bold text-sky-600 dark:text-sky-400">
+                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                     {goal.label}
                   </div>
                   <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -338,7 +338,7 @@ export default function OnboardingWizard({
               </button>
               <button
                 onClick={() => setStep(3)}
-                className="px-6 py-2.5 bg-sky-600 text-white font-medium rounded-lg hover:bg-sky-700 transition-colors"
+                className="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Continue
               </button>
@@ -371,7 +371,7 @@ export default function OnboardingWizard({
             <button
               onClick={handleComplete}
               disabled={loading}
-              className="px-8 py-3 bg-sky-600 text-white font-semibold rounded-xl hover:bg-sky-700 disabled:opacity-60 transition-colors w-full"
+              className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 disabled:opacity-60 transition-colors w-full"
             >
               {loading ? "Setting up your track…" : "Let's start learning →"}
             </button>

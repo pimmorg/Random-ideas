@@ -93,7 +93,7 @@ export default function DashboardClient({
       <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
         <span className="text-base">{trackIcon}</span>
         <span>{trackName}</span>
-        <span className="ml-auto text-xs bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-300 px-2 py-0.5 rounded-full font-medium">
+        <span className="ml-auto text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 px-2 py-0.5 rounded-full font-medium">
           {overallCompletion}% complete
         </span>
       </div>
@@ -106,7 +106,7 @@ export default function DashboardClient({
           label="day streak"
         />
         <StatCard
-          icon={<Zap className="w-4 h-4 text-sky-500" />}
+          icon={<Zap className="w-4 h-4 text-blue-500" />}
           value={stats.totalXp}
           label="total XP"
         />
@@ -125,14 +125,14 @@ export default function DashboardClient({
         >
           <Link
             href={`/lesson/${currentLesson.id}`}
-            className="flex items-center gap-4 p-4 bg-sky-600 hover:bg-sky-700 text-white rounded-xl transition-colors group"
+            className="flex items-center gap-4 p-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors group"
           >
             <div className="flex-1">
-              <div className="text-xs text-sky-200 mb-0.5">{currentLesson.unitTitle}</div>
+              <div className="text-xs text-blue-200 mb-0.5">{currentLesson.unitTitle}</div>
               <div className="font-semibold">{currentLesson.title}</div>
-              <div className="text-xs text-sky-200 mt-0.5">Continue learning →</div>
+              <div className="text-xs text-blue-200 mt-0.5">Continue learning →</div>
             </div>
-            <ChevronRight className="w-5 h-5 text-sky-200 group-hover:translate-x-0.5 transition-transform" />
+            <ChevronRight className="w-5 h-5 text-blue-200 group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </motion.div>
       )}
@@ -173,11 +173,11 @@ export default function DashboardClient({
 
       {/* Next track preview */}
       {showNextTrackPreview && (
-        <div className="p-4 rounded-xl border-2 border-dashed border-sky-300 dark:border-sky-700 bg-sky-50/50 dark:bg-sky-950/30">
-          <p className="text-sm font-medium text-sky-700 dark:text-sky-300">
+        <div className="p-4 rounded-xl border-2 border-dashed border-blue-300 dark:border-blue-700 bg-blue-50/50 dark:bg-blue-950/30">
+          <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
             You're almost ready for your next rating!
           </p>
-          <p className="text-xs text-sky-600/70 dark:text-sky-400/70 mt-1">
+          <p className="text-xs text-blue-600/70 dark:text-blue-400/70 mt-1">
             Want a preview of what comes next? Check Settings → "Browse all certifications"
           </p>
         </div>
@@ -240,7 +240,7 @@ function UnitCard({ unit, unitIndex }: { unit: Unit; unitIndex: number }) {
           <div className="flex items-center gap-2 mt-1">
             <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
               <div
-                className="h-full bg-sky-500 rounded-full transition-all"
+                className="h-full bg-blue-500 rounded-full transition-all"
                 style={{ width: `${unit.completionPercent}%` }}
               />
             </div>
@@ -252,7 +252,7 @@ function UnitCard({ unit, unitIndex }: { unit: Unit; unitIndex: number }) {
         {unit.questionCount > 0 && unit.completionPercent > 0 && (
           <Link
             href={`/quiz/${unit.id}`}
-            className="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full bg-sky-50 text-sky-700 hover:bg-sky-100 dark:bg-sky-950 dark:text-sky-300 dark:hover:bg-sky-900 transition-colors"
+            className="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900 transition-colors"
           >
             Quiz
           </Link>
@@ -278,7 +278,7 @@ function LessonRow({ lesson }: { lesson: Lesson }) {
           ? "opacity-50 cursor-not-allowed"
           : lesson.completed
           ? "hover:bg-slate-50 dark:hover:bg-slate-800/50"
-          : "hover:bg-sky-50/50 dark:hover:bg-sky-950/20"
+          : "hover:bg-blue-50/50 dark:hover:bg-blue-950/20"
       )}
     >
       <div className="shrink-0">
@@ -287,7 +287,7 @@ function LessonRow({ lesson }: { lesson: Lesson }) {
         ) : lesson.completed ? (
           <CheckCircle2 className="w-4 h-4 text-emerald-500" />
         ) : (
-          <Circle className="w-4 h-4 text-sky-400" />
+          <Circle className="w-4 h-4 text-blue-400" />
         )}
       </div>
       <div className="flex-1 min-w-0">
@@ -299,7 +299,7 @@ function LessonRow({ lesson }: { lesson: Lesson }) {
         </div>
       </div>
       {lesson.completed && lesson.xpEarned > 0 && (
-        <div className="flex items-center gap-0.5 text-xs text-sky-600 dark:text-sky-400 shrink-0">
+        <div className="flex items-center gap-0.5 text-xs text-blue-600 dark:text-blue-400 shrink-0">
           <Star className="w-3 h-3" />
           {lesson.xpEarned}
         </div>

@@ -11,10 +11,10 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-950 via-sky-950 to-slate-950 text-white flex flex-col">
+    <main className="min-h-screen bg-gradient-to-b from-slate-900 via-blue-950 to-slate-900 text-white flex flex-col">
       {/* Nav */}
       <header className="max-w-5xl mx-auto w-full px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2 font-bold text-sky-400">
+        <div className="flex items-center gap-2 font-bold text-blue-400">
           <Plane className="w-5 h-5" />
           SkySchool
         </div>
@@ -27,7 +27,7 @@ export default async function HomePage() {
           </Link>
           <Link
             href="/register"
-            className="text-sm bg-sky-600 hover:bg-sky-500 text-white px-4 py-1.5 rounded-lg transition-colors font-medium"
+            className="text-sm bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg transition-colors font-medium"
           >
             Get Started
           </Link>
@@ -39,14 +39,14 @@ export default async function HomePage() {
         <div className="text-6xl mb-4">✈️</div>
         <h1 className="text-4xl sm:text-5xl font-bold mb-4 leading-tight max-w-2xl">
           Study smarter,{" "}
-          <span className="text-sky-400">fly sooner.</span>
+          <span className="text-blue-400">fly sooner.</span>
         </h1>
         <p className="text-slate-300 text-lg max-w-xl mb-8 leading-relaxed">
           A structured, gamified study platform for student pilots. From Private Pilot to ATP — master aviation knowledge one lesson at a time.
         </p>
         <Link
           href="/register"
-          className="flex items-center gap-2 px-8 py-3.5 bg-sky-600 hover:bg-sky-500 text-white font-semibold rounded-xl text-base transition-colors"
+          className="flex items-center gap-2 px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl text-base transition-colors"
         >
           Start Learning Free <ArrowRight className="w-4 h-4" />
         </Link>
@@ -58,7 +58,7 @@ export default async function HomePage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {[
             {
-              icon: <BookOpen className="w-6 h-6 text-sky-400" />,
+              icon: <BookOpen className="w-6 h-6 text-blue-400" />,
               title: "ACS-Aligned Content",
               description: "Lessons and questions mapped to FAA Airman Certification Standards. Accurate, up-to-date, FAR/AIM referenced.",
             },

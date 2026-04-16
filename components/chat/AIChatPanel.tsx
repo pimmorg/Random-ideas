@@ -159,8 +159,8 @@ export default function AIChatPanel({ lessonContext, onClose }: AIChatPanelProps
     >
       {/* Header */}
       <div className="flex items-center gap-2 p-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
-        <div className="w-7 h-7 rounded-full bg-sky-100 dark:bg-sky-900 flex items-center justify-center">
-          <Sparkles className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+        <div className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+          <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
         </div>
         <div className="flex-1">
           <div className="text-sm font-semibold text-slate-900 dark:text-white">
@@ -191,21 +191,21 @@ export default function AIChatPanel({ lessonContext, onClose }: AIChatPanelProps
               className={cn(
                 "w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5",
                 msg.role === "user"
-                  ? "bg-sky-600"
-                  : "bg-sky-100 dark:bg-sky-900"
+                  ? "bg-blue-600"
+                  : "bg-blue-100 dark:bg-blue-900"
               )}
             >
               {msg.role === "user" ? (
                 <User className="w-3.5 h-3.5 text-white" />
               ) : (
-                <Bot className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                <Bot className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
               )}
             </div>
             <div
               className={cn(
                 "max-w-[85%] rounded-xl px-3 py-2 text-sm",
                 msg.role === "user"
-                  ? "bg-sky-600 text-white"
+                  ? "bg-blue-600 text-white"
                   : "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100"
               )}
             >
@@ -236,7 +236,7 @@ export default function AIChatPanel({ lessonContext, onClose }: AIChatPanelProps
               key={action.label}
               onClick={() => sendMessage(action.prompt)}
               disabled={streaming}
-              className="text-xs px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-950 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800 hover:bg-sky-100 dark:hover:bg-sky-900 transition-colors disabled:opacity-50"
+              className="text-xs px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors disabled:opacity-50"
             >
               {action.label}
             </button>
@@ -257,13 +257,13 @@ export default function AIChatPanel({ lessonContext, onClose }: AIChatPanelProps
             onKeyDown={handleKeyDown}
             placeholder="Ask anything…"
             rows={1}
-            className="flex-1 resize-none text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent max-h-28"
+            className="flex-1 resize-none text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent max-h-28"
             style={{ minHeight: "36px" }}
           />
           <button
             type="submit"
             disabled={!input.trim() || streaming}
-            className="p-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 disabled:opacity-50 transition-colors shrink-0"
+            className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors shrink-0"
             aria-label="Send"
           >
             <Send className="w-4 h-4" />

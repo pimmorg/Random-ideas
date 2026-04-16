@@ -18,7 +18,7 @@ export default function AIChatButton({ lessonContext }: AIChatButtonProps) {
       <button
         onClick={() => setOpen(true)}
         className={cn(
-          "fixed bottom-20 right-4 z-40 w-12 h-12 bg-sky-600 hover:bg-sky-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all",
+          "fixed bottom-20 right-4 z-40 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all",
           open && "opacity-0 pointer-events-none"
         )}
         aria-label="Open AI tutor"

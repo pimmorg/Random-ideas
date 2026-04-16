@@ -136,7 +136,7 @@ export default function QuizClient({
         <div className="flex items-center gap-2">
           <div className="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-sky-500 rounded-full"
+              className="h-full bg-blue-500 rounded-full"
               style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
               transition={{ duration: 0.3 }}
             />
@@ -173,7 +173,7 @@ export default function QuizClient({
                   className={cn(
                     "w-full text-left p-4 rounded-xl border-2 transition-all text-sm font-medium",
                     !revealed
-                      ? "border-slate-200 dark:border-slate-700 hover:border-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/30"
+                      ? "border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30"
                       : isCorrect
                       ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-200"
                       : isSelected
@@ -250,7 +250,7 @@ export default function QuizClient({
               <button
                 onClick={handleNext}
                 disabled={submitting}
-                className="flex items-center gap-2 px-5 py-2.5 bg-sky-600 text-white font-medium rounded-lg hover:bg-sky-700 transition-colors disabled:opacity-60"
+                className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-60"
               >
                 {currentIndex < questions.length - 1 ? (
                   <>
@@ -345,7 +345,7 @@ function QuizResults({
         </button>
         <button
           onClick={onHome}
-          className="flex items-center gap-2 px-4 py-2.5 bg-sky-600 text-white rounded-lg text-sm font-medium hover:bg-sky-700 transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
         >
           <Home className="w-4 h-4" />
           Dashboard
