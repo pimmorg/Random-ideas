@@ -697,6 +697,182 @@ The memory aid for B/C/D/E cloud clearance: **"152"** — 500 below (round to "1
     ]})
   }
 
+  // Unit 5: Aviation Weather
+  const unit5 = await prisma.unit.upsert({
+    where: { trackId_slug: { trackId: ppl.id, slug: "aviation-weather" } },
+    update: {},
+    create: { trackId: ppl.id, slug: "aviation-weather", title: "Aviation Weather", description: "Hazards, forecasts, and the weather products every pilot must understand.", icon: "🌦️", sortOrder: 5 },
+  })
+
+  const l9 = await prisma.lesson.upsert({
+    where: { unitId_slug: { unitId: unit5.id, slug: "weather-hazards" } },
+    update: {},
+    create: { unitId: unit5.id, slug: "weather-hazards", title: "Weather Hazards", description: "Thunderstorms, icing, turbulence, wind shear, and density altitude.", estimatedMins: 15, sortOrder: 1 },
+  })
+
+  await prisma.lessonSection.deleteMany({ where: { lessonId: l9.id } })
+  await prisma.lessonSection.createMany({
+    data: [
+      {
+        lessonId: l9.id,
+        title: "Thunderstorms & Structural Icing",
+        content: `### Thunderstorms
+
+A thunderstorm requires three ingredients: **moisture**, **a lifting mechanism**, and **atmospheric instability**. All three must be present simultaneously. When they are, the result is one of the most hazardous environments a VFR pilot can encounter.
+
+**The three stages:**
+
+| Stage | Characteristics | Duration |
+|-------|----------------|----------|
+| **Cumulus** | Strong updrafts only, building vertically | 10–15 min |
+| **Mature** | Both updrafts AND downdrafts, heaviest precipitation, most dangerous | 10–30 min |
+| **Dissipating** | Downdrafts dominate, anvil top, rain decreasing | 15–30 min |
+
+The **mature stage** is the most hazardous. It contains:
+- Severe turbulence (updrafts/downdrafts exceeding 6,000 ft/min)
+- Large hail — often extending miles beyond the visible cell
+- Lightning — can strike aircraft well outside the cloud
+- **Microburst** — a sudden, intense downdraft that spreads outward at ground level, causing severe wind shear
+
+:::warning
+The FAA's guidance is clear: **avoid thunderstorms by at least 20 nautical miles**. Do not attempt to fly under, over, or through a thunderstorm. Radar shows precipitation, not turbulence — severe turbulence can exist in clear air adjacent to a cell.
+:::
+
+---
+
+### Structural Icing
+
+Structural icing occurs when an aircraft flies through **supercooled liquid water droplets** — water that remains liquid below 0°C. On contact with the airframe, these droplets freeze instantly.
+
+**Types of ice:**
+
+| Type | Appearance | Hazard Level |
+|------|-----------|-------------|
+| **Clear (glaze)** | Transparent, smooth, heavy | Most dangerous — hard to see, heavy |
+| **Rime** | White, rough, milky | Moderate — distorts airfoil shape |
+| **Mixed** | Combination | High — worst properties of both |
+
+Ice is dangerous because it:
+1. **Destroys the airfoil shape** — even ¼ inch of ice on the leading edge can reduce lift by 25% and increase drag by 50%
+2. **Adds weight** — 1 inch of clear ice over a typical GA wing weighs hundreds of pounds
+3. **Affects control surfaces** — can jam or stiffen ailerons, elevator, and rudder
+
+:::warning
+Most single-engine GA aircraft (Cessna 172, Piper Cherokee, etc.) are **NOT certified for flight into known icing (FIKI)**. If you encounter unexpected icing, exit immediately — turn toward warmer air, descend to a lower altitude, or reverse course.
+:::
+
+:::tip
+**Forecast tools:** Check AIRMETs (Airmen's Meteorological Information) for icing before every flight. AIRMET Sierra covers IFR conditions and mountain obscuration; **AIRMET Zulu covers icing**; AIRMET Tango covers turbulence. SIGMETs cover severe conditions.
+:::`,
+        sortOrder: 1,
+      },
+      {
+        lessonId: l9.id,
+        title: "Turbulence, Wind Shear & Density Altitude",
+        content: `### Turbulence
+
+Turbulence is classified by intensity:
+
+| Intensity | Effect on Aircraft | Effect on Occupants |
+|-----------|-------------------|---------------------|
+| **Light** | Slight, erratic changes in altitude/attitude | Minor strain against seatbelts |
+| **Moderate** | Similar but more intense — aircraft remains in control | Difficult to walk, food/drinks spill |
+| **Severe** | Large, abrupt changes — momentarily out of control | Occupants thrown violently |
+| **Extreme** | Aircraft impossible to control — structural damage possible | Rare; avoid at all costs |
+
+**Sources of turbulence:**
+- **Mechanical** — air flowing over uneven terrain, buildings, or trees
+- **Thermal** — rising columns of warm air on hot days (especially over dark surfaces)
+- **Wind shear** — rapid change in wind speed or direction over a short distance
+- **Mountain wave** — standing waves downwind of ridgelines, can extend to the stratosphere
+- **Clear Air Turbulence (CAT)** — high-altitude turbulence with no visual warning
+
+:::tip
+Turbulence encounters are best handled by slowing to **maneuvering speed (VA)**. At or below VA, the aircraft will stall before exceeding its structural limits. VA decreases with decreasing weight — check your POH for the correct value.
+:::
+
+---
+
+### Wind Shear
+
+Wind shear is a **sudden change in wind velocity or direction** over a short distance. It is most hazardous during approach and departure at low altitude, where airspeed and altitude margins are smallest.
+
+**Low-Level Wind Shear (LLWS)** near airports can be caused by:
+- Microburst (thunderstorm downdraft)
+- Frontal passage
+- Temperature inversions at low altitudes
+
+The classic microburst encounter on approach:
+1. Headwind increases → airspeed increases, aircraft climbs above glidepath
+2. Pilot reduces power to correct
+3. Downdraft begins → rapid loss of lift
+4. Tailwind follows → airspeed drops sharply
+5. Aircraft now below glidepath with insufficient power to recover
+
+:::warning
+**Microburst rule:** If you observe a microburst on or near the runway, do not attempt the approach. Wait at least 20 minutes — microbursts are short-lived but extremely intense (up to 6,000 ft/min downdraft, 45-knot wind shear).
+:::
+
+---
+
+### Density Altitude
+
+Density altitude is **pressure altitude corrected for non-standard temperature**. It represents the altitude the aircraft "thinks" it's at — the altitude at which its performance will match the POH.
+
+**High density altitude = poor performance:**
+- Engine produces less power (less air = less oxygen)
+- Propeller produces less thrust (less air to bite)
+- Wings produce less lift (less air over the airfoil)
+- **Longer takeoff roll, reduced climb rate, longer landing distance**
+
+:::warning
+**High DA accidents are common at mountain airports in summer.** Leadville, CO (KLXV) sits at 9,927 ft MSL. On a hot summer day, density altitude can exceed 12,000 ft — the aircraft performs as if at 12,000 ft even while sitting on the ground. Always calculate density altitude before flight at high-elevation airports or on hot days.
+:::
+
+:::tip
+**Rule of thumb:** Density altitude increases approximately **120 ft for every 1°C above standard temperature**. Standard temperature decreases 2°C per 1,000 ft of altitude. Use your E6B or a DA calculator before high-elevation or hot-day departures.
+:::`,
+        sortOrder: 2,
+      },
+    ],
+  })
+
+  // Quiz questions for unit5
+  const existingQ5 = await prisma.question.count({ where: { unitId: unit5.id } })
+  if (existingQ5 === 0) {
+    const qw1 = await prisma.question.create({ data: { unitId: unit5.id, question: "The most hazardous stage of a thunderstorm is the:", explanation: "The mature stage is the most dangerous. It contains both strong updrafts and downdrafts simultaneously, the heaviest precipitation, largest hail, most severe turbulence, and the greatest lightning activity.", farAimRef: "FAA-H-8083-28 Ch.11", difficulty: "easy" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: qw1.id, text: "Mature stage", isCorrect: true, sortOrder: 1 },
+      { questionId: qw1.id, text: "Cumulus stage", isCorrect: false, sortOrder: 2 },
+      { questionId: qw1.id, text: "Dissipating stage", isCorrect: false, sortOrder: 3 },
+      { questionId: qw1.id, text: "Anvil stage", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const qw2 = await prisma.question.create({ data: { unitId: unit5.id, question: "Which type of structural ice is considered most dangerous?", explanation: "Clear (glaze) ice is the most dangerous. It is transparent and difficult to see, forms a heavy dense layer that closely conforms to the airfoil, and is hard to remove. It adds significant weight and degrades lift more severely than rime ice.", farAimRef: "FAA-H-8083-28 Ch.10", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: qw2.id, text: "Clear (glaze) ice", isCorrect: true, sortOrder: 1 },
+      { questionId: qw2.id, text: "Rime ice", isCorrect: false, sortOrder: 2 },
+      { questionId: qw2.id, text: "Frost", isCorrect: false, sortOrder: 3 },
+      { questionId: qw2.id, text: "Mixed ice", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const qw3 = await prisma.question.create({ data: { unitId: unit5.id, question: "An aircraft should slow to maneuvering speed (VA) in turbulence because:", explanation: "At or below maneuvering speed, the aircraft will aerodynamically stall before the airframe exceeds its design load limit. Above VA, a single full control deflection or a severe gust could overstress the structure.", farAimRef: "FAA-H-8083-25B Ch.5", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: qw3.id, text: "The aircraft will stall before exceeding structural load limits", isCorrect: true, sortOrder: 1 },
+      { questionId: qw3.id, text: "Lower speed reduces turbulence intensity", isCorrect: false, sortOrder: 2 },
+      { questionId: qw3.id, text: "VA gives the best glide ratio in rough air", isCorrect: false, sortOrder: 3 },
+      { questionId: qw3.id, text: "Slower speed improves pilot reaction time", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const qw4 = await prisma.question.create({ data: { unitId: unit5.id, question: "High density altitude affects aircraft performance by:", explanation: "High density altitude means thinner air. The engine ingests less oxygen (reducing power), the propeller has less air to accelerate (reducing thrust), and the wings generate less lift — all resulting in degraded takeoff, climb, and cruise performance.", farAimRef: "FAA-H-8083-25B Ch.11", difficulty: "easy" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: qw4.id, text: "Reducing engine power, propeller thrust, and lift", isCorrect: true, sortOrder: 1 },
+      { questionId: qw4.id, text: "Increasing stall speed and improving climb rate", isCorrect: false, sortOrder: 2 },
+      { questionId: qw4.id, text: "Reducing drag and shortening the takeoff roll", isCorrect: false, sortOrder: 3 },
+      { questionId: qw4.id, text: "Only affecting turbine engines, not piston aircraft", isCorrect: false, sortOrder: 4 },
+    ]})
+  }
+
   // Achievements
   const achievements = [
     { slug: "first-lesson", name: "First Flight", description: "Complete your first lesson.", icon: "🎯", xpReward: 50, category: "milestones" },
