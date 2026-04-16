@@ -132,7 +132,7 @@ export default function ContentRenderer({ content }: { content: string }) {
         if (part.type === "markdown") {
           return (
             <div key={i} className="prose prose-sm prose-slate dark:prose-invert max-w-none">
-              <ReactMarkdown>{part.content}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{part.content}</ReactMarkdown>
             </div>
           )
         }
