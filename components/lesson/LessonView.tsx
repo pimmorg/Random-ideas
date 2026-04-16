@@ -199,7 +199,7 @@ export default function LessonView({
       )}
 
       {/* Sections */}
-      <div className="space-y-8 pb-32">
+      <div className="space-y-6 pb-32">
         {lesson.sections.map((section, i) => (
           <motion.div
             key={section.id}
@@ -207,13 +207,23 @@ export default function LessonView({
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 p-6"
+            className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden"
           >
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-sky-500 shrink-0" />
-              {section.title}
-            </h2>
-            <ContentRenderer content={section.content} />
+            {/* Section header */}
+            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full bg-sky-100 dark:bg-sky-900 flex items-center justify-center shrink-0">
+                  <BookOpen className="w-3 h-3 text-sky-600 dark:text-sky-400" />
+                </div>
+                <h2 className="text-base font-semibold text-slate-900 dark:text-white">
+                  {section.title}
+                </h2>
+              </div>
+            </div>
+            {/* Section body */}
+            <div className="px-6 py-5">
+              <ContentRenderer content={section.content} />
+            </div>
           </motion.div>
         ))}
       </div>

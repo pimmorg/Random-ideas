@@ -116,23 +116,62 @@ function Callout({ variant, content }: { variant: CalloutVariant; content: strin
         <span>{style.icon}</span>
         {style.label}
       </div>
-      <div className={`prose prose-sm dark:prose-invert max-w-none ${style.text}`}>
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+      <div className={`text-xs leading-relaxed ${style.text}`}>
+        <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>{content}</ReactMarkdown>
       </div>
     </div>
   )
+}
+
+const mdComponents = {
+  p: ({ children }: { children?: React.ReactNode }) => (
+    <p className="mb-4 last:mb-0 leading-7 text-slate-700 dark:text-slate-300">{children}</p>
+  ),
+  h3: ({ children }: { children?: React.ReactNode }) => (
+    <h3 className="text-base font-semibold text-slate-900 dark:text-white mt-6 mb-2 first:mt-0">{children}</h3>
+  ),
+  ul: ({ children }: { children?: React.ReactNode }) => (
+    <ul className="space-y-1.5 my-3 pl-5 list-disc marker:text-slate-400">{children}</ul>
+  ),
+  ol: ({ children }: { children?: React.ReactNode }) => (
+    <ol className="space-y-1.5 my-3 pl-5 list-decimal marker:text-slate-400">{children}</ol>
+  ),
+  li: ({ children }: { children?: React.ReactNode }) => (
+    <li className="leading-7 text-slate-700 dark:text-slate-300">{children}</li>
+  ),
+  strong: ({ children }: { children?: React.ReactNode }) => (
+    <strong className="font-semibold text-slate-900 dark:text-white">{children}</strong>
+  ),
+  table: ({ children }: { children?: React.ReactNode }) => (
+    <div className="my-4 overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700">
+      <table className="w-full text-sm">{children}</table>
+    </div>
+  ),
+  thead: ({ children }: { children?: React.ReactNode }) => (
+    <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold uppercase tracking-wide">{children}</thead>
+  ),
+  th: ({ children }: { children?: React.ReactNode }) => (
+    <th className="px-4 py-2.5 text-left">{children}</th>
+  ),
+  td: ({ children }: { children?: React.ReactNode }) => (
+    <td className="px-4 py-2.5 text-slate-700 dark:text-slate-300 border-t border-slate-100 dark:border-slate-800">{children}</td>
+  ),
+  tr: ({ children }: { children?: React.ReactNode }) => (
+    <tr className="even:bg-slate-50/50 dark:even:bg-slate-800/30">{children}</tr>
+  ),
+  hr: () => <hr className="my-5 border-slate-200 dark:border-slate-700" />,
 }
 
 export default function ContentRenderer({ content }: { content: string }) {
   const parts = parseContent(content)
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {parts.map((part, i) => {
         if (part.type === "markdown") {
           return (
-            <div key={i} className="prose prose-sm prose-slate dark:prose-invert max-w-none">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{part.content}</ReactMarkdown>
+            <div key={i} className="max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>{part.content}</ReactMarkdown>
             </div>
           )
         }
