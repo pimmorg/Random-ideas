@@ -586,6 +586,117 @@ All three ground reference maneuvers (turns around a point, S-turns, rectangular
     ]})
   }
 
+  // Unit 4: Airspace & Regulations
+  const unit4 = await prisma.unit.upsert({
+    where: { trackId_slug: { trackId: ppl.id, slug: "airspace-regulations" } },
+    update: {},
+    create: { trackId: ppl.id, slug: "airspace-regulations", title: "Airspace & Regulations", description: "Airspace classification, VFR weather minimums, and flight rules.", icon: "🗺️", sortOrder: 4 },
+  })
+
+  const l8 = await prisma.lesson.upsert({
+    where: { unitId_slug: { unitId: unit4.id, slug: "airspace-classification" } },
+    update: {},
+    create: { unitId: unit4.id, slug: "airspace-classification", title: "Airspace Classification", description: "Classes A through G — entry requirements, equipment, and weather minimums.", estimatedMins: 15, sortOrder: 1 },
+  })
+
+  await prisma.lessonSection.deleteMany({ where: { lessonId: l8.id } })
+  await prisma.lessonSection.createMany({
+    data: [
+      {
+        lessonId: l8.id,
+        title: "The Six Classes of Airspace",
+        content: `US airspace is divided into six classes — A, B, C, D, E, and G. Each class has different rules for entry, equipment, and weather.
+
+The simplest way to think about them: **controlled vs. uncontrolled**, and **how busy is the airport below?**
+
+- **Class A** — the high-altitude enroute structure above FL180. Always IFR, always a clearance.
+- **Class B** — the "bowl" around the busiest airports. Explicit clearance required.
+- **Class C** — two-ring magenta circles around medium airports. Radio contact required.
+- **Class D** — blue dashed circle around towered airports. Radio contact required.
+- **Class E** — all other controlled airspace (fills in the gaps). No clearance for VFR.
+- **Class G** — uncontrolled surface airspace below Class E. No requirements.
+
+Tap each class in the diagram to see its exact altitude limits, entry rules, equipment requirements, and VFR weather minimums:
+
+[DIAGRAM:airspace]
+
+:::warning
+The most commonly failed written exam topic is airspace. Know the difference between **Class B entry** (explicit clearance: "Cleared into Class Bravo") and **Class C/D entry** (two-way communication established — ATC acknowledging your call sign is sufficient, even if they say "standby").
+:::`,
+        sortOrder: 1,
+      },
+      {
+        lessonId: l8.id,
+        title: "VFR Weather Minimums",
+        content: `VFR weather minimums exist to ensure you can see and avoid traffic. They get more restrictive at night and in controlled airspace.
+
+### The Simple Rule for Class B, C, D, and E (below 10,000 ft)
+**3 SM visibility · 500 ft below / 1,000 ft above / 2,000 ft horizontal from clouds**
+
+### The Exception: Class G Below 1,200 AGL (Day Only)
+**1 SM visibility · Clear of clouds** — the most permissive standard in the system.
+
+### Above 10,000 ft MSL (all classes)
+**5 SM visibility · 1,000 ft below / 1,000 ft above / 1 SM horizontal from clouds**
+
+:::tip
+The memory aid for B/C/D/E cloud clearance: **"152"** — 500 below (round to "1" thousand), 1,000 above, 2,000 horizontal. Or: "Below one, above one, two on the sides."
+:::
+
+:::warning
+**Special VFR** allows you to operate in Class B, C, D, or E surface areas with less than standard VFR weather, but you need ATC clearance, visibility of at least 1 SM, and the ability to remain clear of clouds. At night, an instrument rating is required for Special VFR.
+:::
+
+| Airspace | Visibility | Cloud Clearance |
+|----------|-----------|-----------------|
+| Class A | N/A (IFR only) | N/A |
+| Class B | 3 SM | Clear of clouds |
+| Class C & D | 3 SM | 500 below, 1,000 above, 2,000 horiz |
+| Class E (< 10k) | 3 SM | 500 below, 1,000 above, 2,000 horiz |
+| Class E (≥ 10k) | 5 SM | 1,000 below, 1,000 above, 1 SM horiz |
+| Class G (< 1,200 AGL, day) | 1 SM | Clear of clouds |
+| Class G (< 1,200 AGL, night) | 3 SM | 500 below, 1,000 above, 2,000 horiz |`,
+        sortOrder: 2,
+      },
+    ],
+  })
+
+  // Quiz questions for unit4
+  const existingQ4 = await prisma.question.count({ where: { unitId: unit4.id } })
+  if (existingQ4 === 0) {
+    const qa = await prisma.question.create({ data: { unitId: unit4.id, question: "To enter Class B airspace, a pilot must:", explanation: "Class B requires an explicit ATC clearance — the pilot must hear the words 'Cleared into Class Bravo.' Simply establishing radio contact or receiving a squawk code is not sufficient.", farAimRef: "14 CFR 91.131", difficulty: "easy" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: qa.id, text: "Receive an explicit ATC clearance", isCorrect: true, sortOrder: 1 },
+      { questionId: qa.id, text: "Establish two-way radio communication", isCorrect: false, sortOrder: 2 },
+      { questionId: qa.id, text: "File a VFR flight plan", isCorrect: false, sortOrder: 3 },
+      { questionId: qa.id, text: "Have an instrument rating", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const qb = await prisma.question.create({ data: { unitId: unit4.id, question: "Approaching a Class D airport, ATC responds 'N12345, standby.' The pilot:", explanation: "In Class C and D airspace, entry requires two-way radio communication — ATC must acknowledge your call sign. 'Standby' with your call sign counts as communication. The pilot may enter and continue to communicate. Only a flat 'unable' or no response means you cannot enter.", farAimRef: "14 CFR 91.129", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: qb.id, text: "May enter — two-way communication is established", isCorrect: true, sortOrder: 1 },
+      { questionId: qb.id, text: "Must hold outside until ATC provides explicit clearance", isCorrect: false, sortOrder: 2 },
+      { questionId: qb.id, text: "Must squawk 7600 (lost communications)", isCorrect: false, sortOrder: 3 },
+      { questionId: qb.id, text: "May enter only if weather is above VFR minimums", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const qc = await prisma.question.create({ data: { unitId: unit4.id, question: "The VFR weather minimums in Class G airspace below 1,200 ft AGL during the day are:", explanation: "Class G airspace below 1,200 AGL during the day has the most permissive VFR minimums: 1 SM visibility and clear of clouds. At night, the minimums increase to 3 SM and standard cloud clearances.", farAimRef: "14 CFR 91.155", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: qc.id, text: "1 SM visibility, clear of clouds", isCorrect: true, sortOrder: 1 },
+      { questionId: qc.id, text: "3 SM visibility, 500/1,000/2,000 cloud clearance", isCorrect: false, sortOrder: 2 },
+      { questionId: qc.id, text: "3 SM visibility, clear of clouds", isCorrect: false, sortOrder: 3 },
+      { questionId: qc.id, text: "5 SM visibility, 1,000/1,000/1 SM cloud clearance", isCorrect: false, sortOrder: 4 },
+    ]})
+
+    const qd = await prisma.question.create({ data: { unitId: unit4.id, question: "Class E airspace typically begins at what altitude in a transition area near an airport?", explanation: "Transition areas (shown as a magenta vignette on sectional charts) have a Class E floor of 700 ft AGL. This lower floor protects IFR aircraft on instrument approaches from uncontrolled Class G traffic below. Away from airports, Class E generally starts at 1,200 AGL.", farAimRef: "FAA-H-8083-25B Ch.15", difficulty: "medium" } })
+    await prisma.questionOption.createMany({ data: [
+      { questionId: qd.id, text: "700 ft AGL", isCorrect: true, sortOrder: 1 },
+      { questionId: qd.id, text: "1,200 ft AGL", isCorrect: false, sortOrder: 2 },
+      { questionId: qd.id, text: "2,500 ft AGL", isCorrect: false, sortOrder: 3 },
+      { questionId: qd.id, text: "FL180", isCorrect: false, sortOrder: 4 },
+    ]})
+  }
+
   // Achievements
   const achievements = [
     { slug: "first-lesson", name: "First Flight", description: "Complete your first lesson.", icon: "🎯", xpReward: 50, category: "milestones" },
