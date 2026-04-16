@@ -18,7 +18,7 @@ import {
   PlaneTakeoff,
   Shuffle,
 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, getProficiencyColor } from "@/lib/utils"
 import AIChatButton from "@/components/chat/AIChatButton"
 
 interface Lesson {
@@ -153,15 +153,15 @@ export default function DashboardClient({
       >
         <Link
           href="/quiz/daily"
-          className="flex items-center gap-4 p-4 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/30 dark:hover:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-100 rounded-xl transition-colors group"
+          className="flex items-center gap-4 p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 border-l-4 border-l-amber-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl shadow-sm transition-colors group"
         >
           <Shuffle className="w-8 h-8 text-amber-500 shrink-0" />
           <div className="flex-1">
-            <div className="text-xs text-amber-600 dark:text-amber-400 mb-0.5">5 random questions</div>
-            <div className="font-semibold">Daily Quick Quiz</div>
-            <div className="text-xs text-amber-600/80 dark:text-amber-400/80 mt-0.5">From your completed lessons →</div>
+            <div className="text-xs text-amber-600 dark:text-amber-400 font-medium mb-0.5">5 random questions</div>
+            <div className="font-semibold text-slate-800 dark:text-slate-200">Daily Quick Quiz</div>
+            <div className="text-xs text-slate-400 mt-0.5">From your completed lessons</div>
           </div>
-          <ChevronRight className="w-5 h-5 text-amber-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
+          <ChevronRight className="w-5 h-5 text-slate-300 group-hover:translate-x-0.5 transition-transform shrink-0" />
         </Link>
       </motion.div>
 
@@ -169,7 +169,7 @@ export default function DashboardClient({
       <div>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-0.5 h-5 bg-blue-500 rounded-full" />
-          <h2 className="text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-widest">
+          <h2 className="text-xs font-semibold tracking-widest text-slate-500 uppercase">
             Skill Tree
           </h2>
           <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
@@ -190,15 +190,15 @@ export default function DashboardClient({
         >
           <Link
             href={`/quiz/track/${trackId}`}
-            className="flex items-center gap-4 p-4 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl transition-all group"
+            className="flex items-center gap-4 p-4 bg-gradient-to-r from-blue-700 to-blue-800 hover:from-blue-800 hover:to-blue-900 text-white rounded-xl shadow-sm transition-all group"
           >
-            <Trophy className="w-8 h-8 text-violet-200 shrink-0" />
+            <Trophy className="w-8 h-8 text-blue-200 shrink-0" />
             <div className="flex-1">
-              <div className="text-xs text-violet-200 mb-0.5">Mixed questions from all units</div>
+              <div className="text-xs text-blue-200 mb-0.5">Mixed questions from all units</div>
               <div className="font-semibold">Overall Track Test</div>
-              <div className="text-xs text-violet-200 mt-0.5">Test your knowledge across {trackShortName} →</div>
+              <div className="text-xs text-blue-200 mt-0.5">Test your knowledge across {trackShortName} →</div>
             </div>
-            <ChevronRight className="w-5 h-5 text-violet-200 group-hover:translate-x-0.5 transition-transform shrink-0" />
+            <ChevronRight className="w-5 h-5 text-blue-200 group-hover:translate-x-0.5 transition-transform shrink-0" />
           </Link>
         </motion.div>
       )}
@@ -231,7 +231,7 @@ function StatCard({
   label: string
 }) {
   return (
-    <div className="flex flex-col items-center gap-1 p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm">
+    <div className="flex flex-col items-center gap-1 p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
       {icon}
       <span className="text-lg font-bold text-slate-900 dark:text-white">{value}</span>
       <span className="text-xs text-slate-500 dark:text-slate-400">{label}</span>
@@ -253,7 +253,7 @@ function UnitCard({ unit, unitIndex }: { unit: Unit; unitIndex: number }) {
         "rounded-xl border bg-white dark:bg-slate-900 overflow-hidden",
         isFullyCompleted && mastery !== "none"
           ? masteryBg[mastery]
-          : "border-slate-100 dark:border-slate-800"
+          : "border-slate-200 dark:border-slate-800 shadow-sm"
       )}
     >
       {/* Unit header — the whole rectangle is the progress bar */}
@@ -289,7 +289,7 @@ function UnitCard({ unit, unitIndex }: { unit: Unit; unitIndex: number }) {
           <div className="flex items-center gap-3 shrink-0">
             {unit.quizScore !== null && (
               <div className="text-right hidden sm:block">
-                <div className="text-sm font-extrabold text-violet-600 dark:text-violet-400 leading-none tabular-nums">
+                <div className={cn("text-sm font-extrabold leading-none tabular-nums", getProficiencyColor(unit.quizScore ?? 0))}>
                   {unit.quizScore}%
                 </div>
                 <div className="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5">
@@ -351,11 +351,11 @@ function masteryScore(level: string) {
 }
 
 function readinessStatus(pct: number): { label: string; color: string; ring: string } {
-  if (pct >= 85) return { label: "Well prepared",      color: "text-emerald-600 dark:text-emerald-400", ring: "#10b981" }
-  if (pct >= 70) return { label: "Nearly ready",       color: "text-blue-600 dark:text-blue-400",      ring: "#3b82f6" }
-  if (pct >= 50) return { label: "Making progress",    color: "text-amber-600 dark:text-amber-400",    ring: "#f59e0b" }
-  if (pct >= 25) return { label: "Building foundation", color: "text-slate-500 dark:text-slate-400",   ring: "#64748b" }
-  return            { label: "Just starting",          color: "text-slate-400 dark:text-slate-500",    ring: "#94a3b8" }
+  if (pct >= 85) return { label: "Well prepared",       color: "text-emerald-700 bg-emerald-50 dark:text-emerald-300 dark:bg-emerald-950", ring: "#10b981" }
+  if (pct >= 70) return { label: "Nearly ready",        color: "text-emerald-600 bg-emerald-50 dark:text-emerald-300 dark:bg-emerald-950", ring: "#10b981" }
+  if (pct >= 50) return { label: "Making progress",     color: "text-amber-700 bg-amber-50 dark:text-amber-300 dark:bg-amber-950",         ring: "#f59e0b" }
+  if (pct >= 25) return { label: "Building foundation", color: "text-blue-700 bg-blue-50 dark:text-blue-300 dark:bg-blue-950",             ring: "#3b82f6" }
+  return                { label: "Just starting",       color: "text-slate-500 bg-slate-100 dark:text-slate-400 dark:bg-slate-800",        ring: "#94a3b8" }
 }
 
 function ReadinessSummary({ units, overallCompletion }: { units: Unit[]; overallCompletion: number }) {
@@ -378,7 +378,7 @@ function ReadinessSummary({ units, overallCompletion }: { units: Unit[]; overall
   const cs = readinessStatus(checkride)
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
       <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
         <Target className="w-4 h-4 text-blue-500 shrink-0" />
         <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Exam Readiness</h2>
@@ -450,7 +450,7 @@ function ReadinessCard({
       </div>
 
       {/* Status badge */}
-      <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 ${status.color}`}>
+      <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${status.color}`}>
         {status.label}
       </span>
 

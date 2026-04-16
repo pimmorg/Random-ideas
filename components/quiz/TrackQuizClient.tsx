@@ -105,7 +105,7 @@ export default function TrackQuizClient({ trackName, questions }: TrackQuizClien
         <div className="flex items-center gap-2">
           <div className="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-violet-500 rounded-full"
+              className="h-full bg-blue-500 rounded-full"
               style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
               transition={{ duration: 0.3 }}
             />
@@ -114,7 +114,7 @@ export default function TrackQuizClient({ trackName, questions }: TrackQuizClien
             {currentIndex + 1} / {questions.length}
           </span>
         </div>
-        <div className="mt-1 text-xs text-violet-600 dark:text-violet-400">
+        <div className="mt-1 text-xs text-blue-600 dark:text-blue-400">
           Unit: {currentQuestion.unitTitle}
         </div>
       </div>
@@ -145,7 +145,7 @@ export default function TrackQuizClient({ trackName, questions }: TrackQuizClien
                   className={cn(
                     "w-full text-left p-4 rounded-xl border-2 transition-all text-sm font-medium",
                     !revealed
-                      ? "border-slate-200 dark:border-slate-700 hover:border-violet-400 hover:bg-violet-50 dark:hover:bg-violet-950/30"
+                      ? "border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30"
                       : isCorrect
                       ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-200"
                       : isSelected
@@ -217,7 +217,7 @@ export default function TrackQuizClient({ trackName, questions }: TrackQuizClien
             >
               <button
                 onClick={handleNext}
-                className="flex items-center gap-2 px-5 py-2.5 bg-violet-600 text-white font-medium rounded-lg hover:bg-violet-700 transition-colors"
+                className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
               >
                 {currentIndex < questions.length - 1 ? (
                   <>
@@ -286,7 +286,7 @@ function TrackResults({
       className={`max-w-md mx-auto text-center rounded-2xl bg-gradient-to-b ${bgColor} p-8 border border-slate-100 dark:border-slate-800`}
     >
       <div className="text-6xl mb-4">{emoji}</div>
-      <div className="inline-flex items-center gap-2 text-xs font-semibold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950 px-3 py-1 rounded-full mb-3">
+      <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950 px-3 py-1 rounded-full mb-3">
         <Trophy className="w-3.5 h-3.5" />
         Overall Track Test
       </div>
@@ -306,7 +306,7 @@ function TrackResults({
         </button>
         <button
           onClick={onHome}
-          className="flex items-center gap-2 px-4 py-2.5 bg-violet-600 text-white rounded-lg text-sm font-medium hover:bg-violet-700 transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
         >
           <Home className="w-4 h-4" />
           Dashboard

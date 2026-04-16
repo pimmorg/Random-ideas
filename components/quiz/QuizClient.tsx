@@ -154,7 +154,7 @@ export default function QuizClient({
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -30 }}
           transition={{ duration: 0.2 }}
-          className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-6"
+          className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6"
         >
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-6 leading-relaxed">
             {currentQuestion.question}

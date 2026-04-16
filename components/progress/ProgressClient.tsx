@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Award, Zap, CheckCircle2, Target, TrendingUp } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, getProficiencyColor } from "@/lib/utils"
 
 interface UnitStat {
   id: string
@@ -70,7 +70,7 @@ export default function ProgressClient({
         {[
           { icon: <Zap className="w-4 h-4 text-blue-500" />, value: totalXp, label: "Total XP" },
           { icon: <CheckCircle2 className="w-4 h-4 text-emerald-500" />, value: lessonsCompleted, label: "Lessons Done" },
-          { icon: <Target className="w-4 h-4 text-purple-500" />, value: `${avgAccuracy}%`, label: "Avg Accuracy" },
+          { icon: <Target className="w-4 h-4 text-blue-500" />, value: `${avgAccuracy}%`, label: "Avg Accuracy" },
           { icon: <TrendingUp className="w-4 h-4 text-orange-500" />, value: `${overallReadiness}%`, label: "Readiness" },
         ].map((stat, i) => (
           <motion.div
@@ -78,7 +78,7 @@ export default function ProgressClient({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="flex flex-col items-center gap-1 p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm"
+            className="flex flex-col items-center gap-1 p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"
           >
             {stat.icon}
             <span className="text-lg font-bold text-slate-900 dark:text-white">{stat.value}</span>
@@ -88,19 +88,19 @@ export default function ProgressClient({
       </div>
 
       {/* Readiness meter */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 p-4">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4">
         <div className="flex justify-between items-center mb-2">
-          <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+          <h2 className="text-xs font-semibold tracking-widest text-slate-500 uppercase">
             Written Exam Readiness
           </h2>
           <span
             className={cn(
               "text-sm font-bold",
               overallReadiness >= 80
-                ? "text-emerald-600"
+                ? "text-emerald-500"
                 : overallReadiness >= 60
-                ? "text-yellow-600"
-                : "text-red-500"
+                ? "text-amber-500"
+                : "text-blue-600"
             )}
           >
             {overallReadiness}%
@@ -132,14 +132,14 @@ export default function ProgressClient({
 
       {/* Unit breakdown */}
       <div>
-        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-3">
+        <h2 className="text-xs font-semibold tracking-widest text-slate-500 uppercase mb-3">
           Unit Breakdown
         </h2>
         <div className="space-y-3">
           {unitStats.map((unit) => (
             <div
               key={unit.id}
-              className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 p-4"
+              className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
@@ -168,16 +168,7 @@ export default function ProgressClient({
                   </div>
                 </div>
                 {unit.bestScore !== null && (
-                  <div
-                    className={cn(
-                      "text-sm font-bold shrink-0",
-                      unit.bestScore >= 80
-                        ? "text-emerald-600"
-                        : unit.bestScore >= 70
-                        ? "text-yellow-600"
-                        : "text-red-500"
-                    )}
-                  >
+                  <div className={cn("text-sm font-bold shrink-0", getProficiencyColor(unit.bestScore))}>
                     {Math.round(unit.bestScore)}%
                   </div>
                 )}
@@ -213,8 +204,8 @@ export default function ProgressClient({
       )}
 
       {/* Streak calendar (last 30 days) */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 p-4">
-        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-4">
+        <h2 className="text-xs font-semibold tracking-widest text-slate-500 uppercase mb-3">
           Study Activity (last 30 days)
         </h2>
         <div className="flex gap-1 flex-wrap">
